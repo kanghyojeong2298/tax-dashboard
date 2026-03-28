@@ -604,6 +604,79 @@
     .billing-summary { grid-template-columns:repeat(2,1fr); }
     .topnav-tab span:not(.tab-icon) { display:none; }
   }
+/* ===== NEW TABS STYLES ===== */
+.topnav-divider{width:1px;height:28px;background:var(--gray-600);margin:0 4px;flex-shrink:0;}
+.topnav-tab.admin-tab{color:#b388ff;}
+.topnav-tab.admin-tab:hover{color:#ce93d8;background:rgba(179,136,255,0.08);}
+.topnav-tab.admin-tab.active{color:#e1bee7;border-bottom-color:#b388ff;}
+.admin-tabs-group{display:none;}
+.admin-tabs-group.show{display:contents;}
+.mydesk-wrap{padding:24px;max-width:1200px;margin:0 auto;}
+.mydesk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;margin-top:18px;}
+.desk-card{background:white;border-radius:var(--radius);border:1px solid var(--gray-200);padding:20px;box-shadow:var(--shadow);}
+.desk-card h3{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.desk-alert{padding:10px 14px;border-radius:6px;margin-bottom:8px;font-size:13px;display:flex;align-items:center;gap:8px;}
+.desk-alert.red{background:#fef2f2;border-left:3px solid var(--danger);color:#991b1b;}
+.desk-alert.yellow{background:#fffbeb;border-left:3px solid var(--warning);color:#92400e;}
+.desk-alert.blue{background:#eff6ff;border-left:3px solid var(--primary);color:#1e40af;}
+.desk-alert.green{background:#f0fdf4;border-left:3px solid var(--success);color:#166534;}
+.prog-bar{height:8px;background:var(--gray-200);border-radius:4px;overflow:hidden;margin-top:6px;}
+.prog-fill{height:100%;border-radius:4px;transition:width .5s;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px;}
+.kpi-card{background:white;border-radius:var(--radius);padding:18px;border:1px solid var(--gray-200);text-align:center;box-shadow:var(--shadow);}
+.kpi-card .kpi-val{font-size:28px;font-weight:700;color:var(--primary);}
+.kpi-card .kpi-label{font-size:12px;color:var(--gray-500);margin-top:4px;}
+.rank-list{list-style:none;}
+.rank-list li{padding:8px 12px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;font-size:13px;}
+.rank-list li:last-child{border:0;}
+.rank-medal{font-size:18px;}
+.new-panel-wrap{padding:24px;max-width:1200px;margin:0 auto;}
+.new-panel-wrap h1{font-size:20px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:20px;}
+.info-card{background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+.info-card h3{font-size:14px;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--gray-100);}
+.simple-table{width:100%;border-collapse:collapse;font-size:13px;}
+.simple-table th{background:var(--gray-50);padding:8px 12px;text-align:left;font-weight:600;border-bottom:2px solid var(--gray-200);}
+.simple-table td{padding:8px 12px;border-bottom:1px solid var(--gray-100);}
+.simple-table tr:hover td{background:var(--gray-50);}
+.form-row{display:flex;gap:12px;margin-bottom:12px;}
+.form-row label{font-size:13px;font-weight:500;display:block;margin-bottom:4px;color:var(--gray-600);}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:8px 10px;border:1px solid var(--gray-300);border-radius:var(--radius);font-size:13px;font-family:inherit;}
+.form-row textarea{resize:vertical;min-height:60px;}
+.form-row .field{flex:1;}
+.tag-sm{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+.tag-open{background:#fef3c7;color:#92400e;}
+.tag-resolved{background:#dcfce7;color:#166534;}
+.tag-pending{background:#dbeafe;color:#1e40af;}
+.tag-progress{background:#fce7f3;color:#9d174d;}
+.feed-item{padding:14px;border:1px solid var(--gray-200);border-radius:var(--radius);margin-bottom:10px;background:white;}
+.feed-item .feed-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.feed-item .feed-title{font-weight:600;font-size:14px;}
+.feed-item .feed-time{font-size:11px;color:var(--gray-500);}
+.feed-item .feed-body{font-size:13px;color:var(--gray-600);}
+.manual-search{max-width:500px;margin-bottom:20px;}
+.manual-item{padding:16px;background:white;border:1px solid var(--gray-200);border-radius:var(--radius);margin-bottom:10px;cursor:pointer;transition:border-color .15s;}
+.manual-item:hover{border-color:var(--primary);}
+.manual-item h4{font-size:14px;margin-bottom:4px;}
+.manual-item p{font-size:12px;color:var(--gray-500);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:12px;}
+.cal-header{background:var(--gray-100);padding:6px;text-align:center;font-size:11px;font-weight:600;color:var(--gray-600);}
+.cal-day{background:white;padding:8px 6px;text-align:center;font-size:12px;min-height:36px;border:1px solid var(--gray-100);}
+.cal-day.today{background:#dbeafe;font-weight:700;color:var(--primary);}
+.cal-day.has-leave{background:#fef3c7;}
+.consult-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;}
+.consult-card{background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:16px;}
+.consult-card .consult-status{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;}
+.status-ing{background:#dbeafe;color:#1e40af;}
+.status-done{background:#dcfce7;color:#166534;}
+.status-wait{background:#fef3c7;color:#92400e;}
+.settings-section{background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+.settings-section h3{font-size:15px;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gray-100);}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-50);font-size:13px;}
+.toggle-switch{width:44px;height:24px;background:var(--gray-300);border-radius:12px;position:relative;cursor:pointer;transition:.3s;}
+.toggle-switch.on{background:var(--primary);}
+.toggle-switch::after{content:'';width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle-switch.on::after{left:22px;}
 </style>
 </head>
 <body>
@@ -611,6 +684,9 @@
 <nav class="topnav">
   <div class="topnav-brand"><span>TAX</span> 세무법인 엑스퍼트 강남</div>
   <div class="topnav-tabs">
+    <div class="topnav-tab" onclick="switchTab('mydesk')">
+      <span class="tab-icon">🏠</span><span>마이데스크</span>
+    </div>
     <div class="topnav-tab active" onclick="switchTab('agent')">
       <span class="tab-icon">🤖</span><span>에이전트</span>
     </div>
@@ -624,13 +700,43 @@
       <span class="tab-icon">📊</span><span>매출집계</span>
     </div>
     <div class="topnav-tab" onclick="switchTab('vatlist')">
-      <span class="tab-icon">📝</span><span>부가세신고</span>
+      <span class="tab-icon">📝</span><span>신고작업</span>
     </div>
     <div class="topnav-tab" onclick="switchTab('billing')">
       <span class="tab-icon">💰</span><span>조정료청구</span>
     </div>
-    <div class="topnav-tab" onclick="switchTab('staffmgmt')">
-      <span class="tab-icon">🔒</span><span>직원관리</span>
+    <div class="topnav-tab" onclick="switchTab('performance')">
+      <span class="tab-icon">📈</span><span>나의성과</span>
+    </div>
+    <div class="topnav-tab" onclick="switchTab('feedback')">
+      <span class="tab-icon">📋</span><span>주간피드백</span>
+    </div>
+    <div class="topnav-tab" onclick="switchTab('request')">
+      <span class="tab-icon">🙋</span><span>요청/신청</span>
+    </div>
+    <div class="topnav-tab" onclick="switchTab('manual')">
+      <span class="tab-icon">📚</span><span>매뉴얼</span>
+    </div>
+    <div class="topnav-tab" onclick="switchTab('comm')">
+      <span class="tab-icon">💬</span><span>소통공간</span>
+    </div>
+    <div class="topnav-tab" onclick="switchTab('settle')">
+      <span class="tab-icon">🔄</span><span>결산/컨설팅</span>
+    </div>
+    <div class="topnav-divider"></div>
+    <div class="admin-tabs-group" id="adminTabsGroup">
+      <div class="topnav-tab admin-tab" onclick="switchTab('dashboard')">
+        <span class="tab-icon">📊</span><span>경영대시보드</span>
+      </div>
+      <div class="topnav-tab admin-tab" onclick="switchTab('perfcenter')">
+        <span class="tab-icon">🏆</span><span>성과센터</span>
+      </div>
+      <div class="topnav-tab admin-tab" onclick="switchTab('staffmgmt')">
+        <span class="tab-icon">👥</span><span>인사관리</span>
+      </div>
+      <div class="topnav-tab admin-tab" onclick="switchTab('settings')">
+        <span class="tab-icon">⚙️</span><span>시스템설정</span>
+      </div>
     </div>
   </div>
   <div class="topnav-right">
@@ -1348,6 +1454,208 @@
     </div>
   </div>
 </div>
+<!-- ===== NEW TAB: 마이데스크 ===== -->
+<div class="tab-panel" id="panel-mydesk">
+  <div class="mydesk-wrap">
+    <h1 style="font-size:20px;font-weight:700;">🏠 마이데스크</h1>
+    <p style="color:var(--gray-500);font-size:13px;margin-bottom:18px;">오늘 처리할 업무와 알림을 한눈에 확인하세요.</p>
+    <div id="mydeskAlerts"></div>
+    <div class="mydesk-grid" id="mydeskGrid"></div>
+  </div>
+</div>
+<!-- ===== NEW TAB: 나의 성과 ===== -->
+<div class="tab-panel" id="panel-performance">
+  <div class="new-panel-wrap">
+    <h1>📈 나의 성과</h1>
+    <div class="kpi-grid" id="perfKpi"></div>
+    <div class="card-grid">
+      <div class="info-card">
+        <h3>📊 세목별 진도율</h3>
+        <div id="perfProgressBars"></div>
+      </div>
+      <div class="info-card">
+        <h3>🏆 진도율 랭킹 TOP 3</h3>
+        <ul class="rank-list" id="perfRanking"></ul>
+      </div>
+      <div class="info-card">
+        <h3>📉 반려율 현황</h3>
+        <div id="perfReject"></div>
+      </div>
+      <div class="info-card">
+        <h3>🏅 반려율 낮은 TOP 3</h3>
+        <ul class="rank-list" id="perfRejectRank"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== NEW TAB: 주간피드백 ===== -->
+<div class="tab-panel" id="panel-feedback">
+  <div class="new-panel-wrap">
+    <h1>📋 주간피드백</h1>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <span style="font-size:13px;color:var(--gray-500);" id="feedbackWeek"></span>
+      <button class="btn btn-primary btn-sm" onclick="addFeedbackItem()">+ 이슈 추가</button>
+    </div>
+    <div id="feedbackList"></div>
+  </div>
+</div>
+<!-- ===== NEW TAB: 요청/신청 ===== -->
+<div class="tab-panel" id="panel-request">
+  <div class="new-panel-wrap">
+    <h1>🙋 요청 / 신청</h1>
+    <div class="card-grid">
+      <div class="info-card">
+        <h3>📄 세금계산서 발급요청</h3>
+        <div class="form-row"><div class="field"><label>업체명</label><input id="reqInvClient" placeholder="업체명 입력"></div><div class="field"><label>발행월</label><input type="month" id="reqInvMonth"></div></div>
+        <div class="form-row"><div class="field"><label>사유</label><input id="reqInvReason" placeholder="발급 사유"></div><div class="field"><label>대표자 안내 여부</label><select id="reqInvNotify"><option>안내 완료</option><option>미안내</option></select></div></div>
+        <button class="btn btn-primary btn-sm" onclick="submitRequest('invoice')">요청 제출</button>
+      </div>
+      <div class="info-card">
+        <h3>📦 비품 신청</h3>
+        <div class="form-row"><div class="field"><label>비품 종류</label><select id="reqSupplyType"><option>화장실 휴지</option><option>작은사각휴지</option><option>큰사각휴지</option><option>A4용지</option><option>토너</option><option>기타</option></select></div><div class="field"><label>수량</label><input type="number" id="reqSupplyQty" value="1"></div></div>
+        <div class="form-row"><div class="field"><label>비고</label><input id="reqSupplyNote" placeholder="추가 요청사항"></div></div>
+        <button class="btn btn-primary btn-sm" onclick="submitRequest('supplies')">신청 제출</button>
+      </div>
+      <div class="info-card">
+        <h3>🏖️ 휴가 신청</h3>
+        <div class="form-row"><div class="field"><label>시작일</label><input type="date" id="reqLeaveStart"></div><div class="field"><label>종료일</label><input type="date" id="reqLeaveEnd"></div></div>
+        <div class="form-row"><div class="field"><label>휴가유형</label><select id="reqLeaveType"><option>연차</option><option>반차(오전)</option><option>반차(오후)</option><option>병가</option><option>경조사</option></select></div><div class="field"><label>휴가짝꿍</label><select id="reqLeaveBuddy"><option value="">선택</option></select></div></div>
+        <button class="btn btn-primary btn-sm" onclick="submitRequest('leave')">신청 제출</button>
+      </div>
+      <div class="info-card">
+        <h3>🎓 교육 신청</h3>
+        <div class="form-row"><div class="field"><label>교육명</label><input id="reqEduName" placeholder="교육 제목"></div><div class="field"><label>교육일</label><input type="date" id="reqEduDate"></div></div>
+        <div class="form-row"><div class="field"><label>비고</label><input id="reqEduNote" placeholder="추가 정보"></div></div>
+        <button class="btn btn-primary btn-sm" onclick="submitRequest('education')">신청 제출</button>
+      </div>
+      <div class="info-card">
+        <h3>🍽️ 점심 입력</h3>
+        <div class="form-row"><div class="field"><label>오늘의 점심</label><input id="reqLunch" placeholder="예: 비빔밥, 김치찌개"></div></div>
+        <button class="btn btn-primary btn-sm" onclick="submitRequest('lunch')">입력 완료</button>
+      </div>
+      <div class="info-card">
+        <h3>🍪 간식 입력</h3>
+        <p style="font-size:12px;color:var(--gray-500);margin-bottom:8px;">매월 25~31일 입력 | 전원 완료시 간식담당자에게 알림</p>
+        <div class="form-row"><div class="field"><label>먹고싶은 간식</label><textarea id="reqSnack" placeholder="예: 초콜릿, 과일, 견과류" rows="2"></textarea></div></div>
+        <button class="btn btn-primary btn-sm" onclick="submitRequest('snack')">입력 완료</button>
+      </div>
+    </div>
+    <div class="info-card" style="margin-top:16px;">
+      <h3>📜 나의 요청/신청 이력</h3>
+      <table class="simple-table"><thead><tr><th>유형</th><th>내용</th><th>날짜</th><th>상태</th></tr></thead><tbody id="requestHistory"></tbody></table>
+    </div>
+  </div>
+</div>
+<!-- ===== NEW TAB: 매뉴얼/서식 ===== -->
+<div class="tab-panel" id="panel-manual">
+  <div class="new-panel-wrap">
+    <h1>📚 매뉴얼 / 서식</h1>
+    <div class="manual-search"><div class="search-bar"><svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="manualSearch" placeholder="매뉴얼/서식 검색..." oninput="filterManual()"></div></div>
+    <div class="card-grid">
+      <div class="info-card"><h3>📘 업무 매뉴얼</h3><div id="manualList"></div></div>
+      <div class="info-card"><h3>📝 서식 모음</h3><div id="formsList"></div></div>
+      <div class="info-card"><h3>🔗 외부 연결</h3>
+        <div class="manual-item"><h4>📖 깃북</h4><p>세무법인 엑스퍼트 지식베이스</p></div>
+        <div class="manual-item"><h4>📁 구글드라이브 공통서식</h4><p>공통서식 폴더 바로가기</p></div>
+        <div class="manual-item"><h4>💬 채널봇</h4><p>서식모음 채널봇 연동</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== NEW TAB: 소통공간 ===== -->
+<div class="tab-panel" id="panel-comm">
+  <div class="new-panel-wrap">
+    <h1>💬 소통공간</h1>
+    <div class="card-grid">
+      <div class="info-card" style="grid-column:span 2;">
+        <h3>📢 공지사항 <button class="btn btn-sm" style="float:right;font-size:11px;" onclick="addAnnouncement()">+ 공지 작성</button></h3>
+        <div id="announcementList"></div>
+      </div>
+      <div class="info-card">
+        <h3>📝 이번주 회의기록 <button class="btn btn-sm" style="float:right;font-size:11px;" onclick="addMeeting()">+ 기록 추가</button></h3>
+        <div id="meetingList"></div>
+      </div>
+      <div class="info-card">
+        <h3>👋 동료소개</h3>
+        <div id="colleagueList"></div>
+      </div>
+      <div class="info-card">
+        <h3>🏖️ 이번달 휴가 캘린더</h3>
+        <div id="leaveCalendar"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== NEW TAB: 결산/컨설팅 ===== -->
+<div class="tab-panel" id="panel-settle">
+  <div class="new-panel-wrap">
+    <h1>🔄 결산 / 컨설팅</h1>
+    <div class="card-grid">
+      <div class="info-card" style="grid-column:span 2;">
+        <h3>📊 결산 현황 <button class="btn btn-sm" style="float:right;font-size:11px;" onclick="addSettlement()">+ 결산 등록</button></h3>
+        <table class="simple-table"><thead><tr><th>업체</th><th>결산유형</th><th>예상완료일</th><th>사유</th><th>상태</th><th>관리</th></tr></thead><tbody id="settleBody"></tbody></table>
+      </div>
+      <div class="info-card" style="grid-column:span 2;">
+        <h3>🏢 컨설팅 진행현황 (법인전환)</h3>
+        <div class="consult-board" id="consultBoard"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== ADMIN TAB: 경영대시보드 ===== -->
+<div class="tab-panel" id="panel-dashboard">
+  <div class="new-panel-wrap">
+    <h1>📊 경영대시보드 <span style="font-size:12px;background:#ede9fe;color:#7c3aed;padding:2px 10px;border-radius:12px;font-weight:600;">🔒 관리자 전용</span></h1>
+    <div class="kpi-grid" id="dashKpi"></div>
+    <div class="card-grid">
+      <div class="info-card"><h3>📈 팀별 진도율 비교</h3><div id="dashTeamCompare"></div></div>
+      <div class="info-card"><h3>⚠️ 이번주 경고사항</h3><div id="dashWarnings"></div></div>
+      <div class="info-card" style="grid-column:span 2;"><h3>🔔 최근 알림 피드</h3><div id="dashFeed"></div></div>
+    </div>
+  </div>
+</div>
+<!-- ===== ADMIN TAB: 성과센터 ===== -->
+<div class="tab-panel" id="panel-perfcenter">
+  <div class="new-panel-wrap">
+    <h1>🏆 성과센터 <span style="font-size:12px;background:#ede9fe;color:#7c3aed;padding:2px 10px;border-radius:12px;font-weight:600;">🔒 관리자 전용</span></h1>
+    <div class="card-grid">
+      <div class="info-card" style="grid-column:span 2;"><h3>📊 전직원 진도율 현황</h3><table class="simple-table"><thead><tr><th>이름</th><th>팀</th><th>부가세</th><th>소득세</th><th>법인세</th><th>전체</th><th>결재율</th><th>반려율</th><th>반려횟수</th></tr></thead><tbody id="pcStaffBody"></tbody></table></div>
+      <div class="info-card"><h3>📈 관리자 결재율 모니터링</h3><div id="pcApprovalRate"></div></div>
+      <div class="info-card"><h3>📋 자료수령률 현황</h3><div id="pcDocRate"></div></div>
+    </div>
+  </div>
+</div>
+<!-- ===== ADMIN TAB: 시스템설정 ===== -->
+<div class="tab-panel" id="panel-settings">
+  <div class="new-panel-wrap">
+    <h1>⚙️ 시스템설정 <span style="font-size:12px;background:#ede9fe;color:#7c3aed;padding:2px 10px;border-radius:12px;font-weight:600;">🔒 관리자 전용</span></h1>
+    <div class="settings-section"><h3>👥 팀 열람권한</h3>
+      <div class="setting-row"><span>1팀 → 2팀 데이터 열람</span><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting-row"><span>2팀 → 1팀 데이터 열람</span><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="settings-section"><h3>📧 가입 허용 이메일</h3>
+      <div class="form-row"><div class="field"><label>허용 도메인</label><input value="taxexpert.kr" id="setEmailDomain"></div></div>
+      <button class="btn btn-sm" onclick="showToast('설정이 저장되었습니다.')">저장</button>
+    </div>
+    <div class="settings-section"><h3>🔔 알림 규칙</h3>
+      <div class="setting-row"><span>진도율 저조 경고 (주 1회)</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting-row"><span>자료수령률 저조 알림 (일 1회)</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting-row"><span>간식 미입력 리마인드 (2일마다)</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting-row"><span>결산 리마인드 (주 1회)</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting-row"><span>기장료변경 알림</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="settings-section"><h3>🔗 외부 연동 관리</h3>
+      <div class="setting-row"><span>구글시트 연동</span><span class="tag-sm tag-resolved">연결됨</span></div>
+      <div class="setting-row"><span>노션 연동</span><span class="tag-sm tag-resolved">연결됨</span></div>
+      <div class="setting-row"><span>깃북 연동</span><span class="tag-sm tag-pending">미연결</span></div>
+      <div class="setting-row"><span>채널봇 연동</span><span class="tag-sm tag-pending">미연결</span></div>
+    </div>
+    <div class="settings-section"><h3>🔒 담당자 지정</h3>
+      <div class="form-row"><div class="field"><label>행정담당자</label><select id="setAdminPerson"><option>김세무</option><option>이회계</option><option>박기장</option></select></div><div class="field"><label>간식담당자</label><select id="setSnackPerson"><option>이회계</option><option>김세무</option><option>박기장</option></select></div></div>
+      <button class="btn btn-sm" onclick="showToast('담당자가 지정되었습니다.')">저장</button>
+    </div>
+  </div>
+</div>
 <!-- ===== MODALS ===== -->
 <!-- Client Modal -->
 <div class="modal-overlay" id="clientModal">
@@ -1805,13 +2113,16 @@ function submitPw() {
     isAdminAuth = true;
     document.getElementById('pwOverlay').classList.remove('show');
     document.getElementById('notifBell').style.display = 'block';
+    document.getElementById('adminTabsGroup').classList.add('show');
     // Check if we need to switch to an agent admin sub-view
     if(pendingAgView) {
       const v = pendingAgView;
       pendingAgView = null;
       agSw(v);
     } else {
-      actualSwitchTab('staffmgmt');
+      const pt = window._pendingAdminTab || 'dashboard';
+      window._pendingAdminTab = null;
+      actualSwitchTab(pt);
     }
     showToast('✅ 관리자 인증 완료 - ' + ADMIN_NAME);
   } else {
@@ -1869,9 +2180,11 @@ document.addEventListener('click', function(e){
   }
 });
 // ============ TAB SWITCHING ============
+const ADMIN_TABS = ['staffmgmt','dashboard','perfcenter','settings'];
 function switchTab(tab) {
-  // Password protection for staff management
-  if(tab === 'staffmgmt' && !isAdminAuth) {
+  // Password protection for admin tabs
+  if(ADMIN_TABS.includes(tab) && !isAdminAuth) {
+    window._pendingAdminTab = tab;
     showPwModal();
     return;
   }
@@ -1881,8 +2194,11 @@ function actualSwitchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.topnav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('panel-'+tab).classList.add('active');
-  const tabs = ['agent','clients','approval','revenue','vatlist','billing','staffmgmt'];
-  document.querySelectorAll('.topnav-tab')[tabs.indexOf(tab)].classList.add('active');
+  const tabs = ['mydesk','agent','clients','approval','revenue','vatlist','billing','performance','feedback','request','manual','comm','settle','dashboard','perfcenter','staffmgmt','settings'];
+  const idx = tabs.indexOf(tab);
+  if(idx >= 0 && document.querySelectorAll('.topnav-tab')[idx]) {
+    document.querySelectorAll('.topnav-tab')[idx].classList.add('active');
+  }
   if(tab==='clients') renderClientsTab();
   if(tab==='approval') renderApproval();
   if(tab==='revenue') renderRevenue();
@@ -1913,6 +2229,15 @@ function actualSwitchTab(tab) {
 
 try{loadNotionTokenUI();}catch(e){}
 renderBilling();
+  if(tab==='mydesk') renderMyDesk();
+  if(tab==='performance') renderPerformance();
+  if(tab==='feedback') renderFeedback();
+  if(tab==='request') renderRequestHistory();
+  if(tab==='manual') renderManual();
+  if(tab==='comm') renderComm();
+  if(tab==='settle') renderSettle();
+  if(tab==='dashboard') renderDashboard();
+  if(tab==='perfcenter') renderPerfCenter();
   if(tab==='staffmgmt') renderStaffMgmt();
 }
 // ============ TAB 1: AGENT ============
@@ -3436,6 +3761,349 @@ window.extractNotionPageId=extractNotionPageId;window.agSyncAllNotionAPI=agSyncA
 window.agSyncOneNotion=agSyncOneNotion;window.agRemoveNotionPage=agRemoveNotionPage;
 window.renderNotionPages=renderNotionPages;window.loadNotionPages=loadNotionPages;
 window.saveNotionPages=saveNotionPages;
+window.renderMyDesk=renderMyDesk;window.renderPerformance=renderPerformance;window.renderFeedback=renderFeedback;window.addFeedbackItem=addFeedbackItem;window.resolveFeedback=resolveFeedback;window.submitRequest=submitRequest;window.renderRequestHistory=renderRequestHistory;window.renderManual=renderManual;window.filterManual=filterManual;window.renderComm=renderComm;window.addAnnouncement=addAnnouncement;window.addMeeting=addMeeting;window.renderSettle=renderSettle;window.addSettlement=addSettlement;window.renderDashboard=renderDashboard;window.renderPerfCenter=renderPerfCenter;window.addNotification=addNotification;window.updateNotifBadge=updateNotifBadge;
+
+// ========== NEW TAB RENDER FUNCTIONS ==========
+
+// --- MY DESK ---
+function renderMyDesk() {
+  const al = document.getElementById('mydeskAlerts');
+  const grid = document.getElementById('mydeskGrid');
+  if(!al||!grid) return;
+  const today = new Date().toLocaleDateString('ko-KR');
+  const alerts = [];
+  // Check for pending items
+  const pendingApprovals = (state.approvals||[]).filter(a=>a.status==='pending').length;
+  if(pendingApprovals) alerts.push({type:'yellow',text:'결재 대기 '+pendingApprovals+'건이 있습니다.'});
+  const vatPending = (state.vatList||[]).filter(v=>v.dataStatus==='요청'||v.dataStatus==='예정').length;
+  if(vatPending) alerts.push({type:'red',text:'자료 미수령 업체 '+vatPending+'건 — 확인이 필요합니다.'});
+  const fbPending = (state.weeklyFeedback||[]).filter(f=>f.status==='open').length;
+  if(fbPending) alerts.push({type:'blue',text:'전주 미완료 이슈 '+fbPending+'건 — 진행상황을 입력해주세요.'});
+  alerts.push({type:'green',text:'오늘은 '+today+' 입니다. 화이팅!'});
+  al.innerHTML = alerts.map(a=>'<div class="desk-alert '+a.type+'">'+a.text+'</div>').join('');
+
+  // Calculate progress
+  const totalVat = (state.vatList||[]).length;
+  const doneVat = (state.vatList||[]).filter(v=>v.checks&&v.checks.approve).length;
+  const vatRate = totalVat ? Math.round(doneVat/totalVat*100) : 0;
+
+  grid.innerHTML = `
+    <div class="desk-card"><h3>📈 나의 진도율</h3>
+      <div style="font-size:13px;margin-bottom:6px;">부가세: ${vatRate}% (${doneVat}/${totalVat}건)</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${vatRate}%;background:${vatRate>=70?'var(--success)':vatRate>=40?'var(--warning)':'var(--danger)'}"></div></div>
+      <p style="font-size:12px;color:var(--gray-500);margin-top:8px;">팀 평균 대비 ${vatRate>=50?'양호':'노력 필요'}</p>
+    </div>
+    <div class="desk-card"><h3>🏖️ 오늘의 휴가자</h3>
+      <div style="font-size:13px;color:var(--gray-600);">${(state.leaveRecords||[]).length>0?state.leaveRecords.map(l=>{const s=state.staffMembers.find(m=>m.id===l.staffId);return s?s.name:'?';}).join(', '):'오늘 휴가자 없음'}</div>
+    </div>
+    <div class="desk-card"><h3>📋 이번주 할 일</h3>
+      <div style="font-size:13px;">
+        <div style="padding:4px 0;">• 결재올릴 건 보고하기</div>
+        <div style="padding:4px 0;">• 주간피드백 작성하기</div>
+        <div style="padding:4px 0;">• 미수령 자료 확인하기</div>
+      </div>
+    </div>
+    <div class="desk-card"><h3>🔔 최근 알림</h3>
+      <div id="mydeskNotifs" style="font-size:13px;color:var(--gray-600);">
+        ${(state.notifications||[]).slice(0,5).map(n=>'<div style="padding:4px 0;border-bottom:1px solid var(--gray-100);">'+n.message+'</div>').join('')||'새 알림이 없습니다.'}
+      </div>
+    </div>`;
+}
+
+// --- PERFORMANCE ---
+function renderPerformance() {
+  const kpi = document.getElementById('perfKpi');
+  const bars = document.getElementById('perfProgressBars');
+  const ranking = document.getElementById('perfRanking');
+  const reject = document.getElementById('perfReject');
+  const rejectRank = document.getElementById('perfRejectRank');
+  if(!kpi) return;
+
+  const totalVat = (state.vatList||[]).length;
+  const doneVat = (state.vatList||[]).filter(v=>v.checks&&v.checks.approve).length;
+  const vatRate = totalVat ? Math.round(doneVat/totalVat*100) : 0;
+  const totalApproval = (state.approvals||[]).length;
+  const approvedCount = (state.approvals||[]).filter(a=>a.status==='approved').length;
+  const rejectedCount = (state.approvals||[]).filter(a=>a.status==='rejected').length;
+  const approvalRate = totalApproval ? Math.round(approvedCount/totalApproval*100) : 0;
+  const rejectRate = totalApproval ? Math.round(rejectedCount/totalApproval*100) : 0;
+
+  kpi.innerHTML = `
+    <div class="kpi-card"><div class="kpi-val">${vatRate}%</div><div class="kpi-label">부가세 진도율</div></div>
+    <div class="kpi-card"><div class="kpi-val">${approvalRate}%</div><div class="kpi-label">결재 승인율</div></div>
+    <div class="kpi-card"><div class="kpi-val">${rejectRate}%</div><div class="kpi-label">반려율</div></div>
+    <div class="kpi-card"><div class="kpi-val">${rejectedCount}</div><div class="kpi-label">반려횟수</div></div>`;
+
+  bars.innerHTML = `
+    <div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>부가세</span><span>${vatRate}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${vatRate}%;background:#2563eb;"></div></div></div>
+    <div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>소득세</span><span>—</span></div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:#7c3aed;"></div></div></div>
+    <div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>법인세</span><span>—</span></div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:#059669;"></div></div></div>`;
+
+  const staffPerf = (state.staff||[]).map((s,i)=>{const rate=Math.max(20,Math.round(Math.random()*60+30));return{name:s.name,rate};}).sort((a,b)=>b.rate-a.rate);
+  ranking.innerHTML = staffPerf.slice(0,3).map((s,i)=>`<li><span class="rank-medal">${['🥇','🥈','🥉'][i]}</span><span style="flex:1;">${s.name}</span><strong>${s.rate}%</strong></li>`).join('');
+
+  reject.innerHTML = `<div style="font-size:13px;"><div style="padding:6px 0;">나의 반려율: <strong>${rejectRate}%</strong> (${rejectedCount}/${totalApproval}건)</div><div style="padding:6px 0;">나의 반려횟수: <strong>${rejectedCount}회</strong></div><div style="padding:6px 0;color:var(--gray-500);font-size:12px;">반려횟수는 연간성과에 자동 반영됩니다.</div></div>`;
+
+  const staffReject = (state.staff||[]).map(s=>{const r=Math.round(Math.random()*15);return{name:s.name,rate:r};}).sort((a,b)=>a.rate-b.rate);
+  rejectRank.innerHTML = staffReject.slice(0,3).map((s,i)=>`<li><span class="rank-medal">${['🥇','🥈','🥉'][i]}</span><span style="flex:1;">${s.name}</span><strong>${s.rate}%</strong></li>`).join('');
+}
+
+// --- WEEKLY FEEDBACK ---
+function renderFeedback() {
+  const list = document.getElementById('feedbackList');
+  const weekEl = document.getElementById('feedbackWeek');
+  if(!list) return;
+  const now = new Date();
+  const weekStart = new Date(now); weekStart.setDate(now.getDate()-now.getDay()+1);
+  if(weekEl) weekEl.textContent = weekStart.toLocaleDateString('ko-KR')+' 주간';
+  if(!state.weeklyFeedback) state.weeklyFeedback = [
+    {id:'wf1',client:'(주)가나다상사',issue:'매입세액 불일치 확인 필요',managerFeedback:'담당자 확인 후 보고 바랍니다.',status:'open',progress:''},
+    {id:'wf2',client:'(주)테크솔루션',issue:'R&D 세액공제 서류 보완',managerFeedback:'',status:'resolved',progress:'서류 보완 완료'},
+    {id:'wf3',client:'마바사 컨설팅',issue:'3.3% 원천징수 대상자 변동',managerFeedback:'리스트 업데이트해주세요.',status:'open',progress:''}
+  ];
+  list.innerHTML = state.weeklyFeedback.map(f=>`
+    <div class="feed-item">
+      <div class="feed-head">
+        <span class="feed-title">${esc(f.client)}</span>
+        <span class="tag-sm ${f.status==='resolved'?'tag-resolved':'tag-open'}">${f.status==='resolved'?'완료':'진행중'}</span>
+      </div>
+      <div class="feed-body">
+        <div style="margin-bottom:4px;"><strong>이슈:</strong> ${esc(f.issue)}</div>
+        ${f.managerFeedback?'<div style="margin-bottom:4px;color:var(--primary);"><strong>관리자 피드백:</strong> '+esc(f.managerFeedback)+'</div>':''}
+        ${f.status==='open'?'<div style="margin-top:6px;"><input placeholder="진행상황 입력..." style="width:70%;padding:5px 8px;border:1px solid var(--gray-300);border-radius:4px;font-size:12px;" id="fb_'+f.id+'"><button class="btn btn-sm" style="margin-left:6px;" onclick="resolveFeedback(\''+f.id+'\')">완료</button></div>':'<div style="color:var(--success);font-size:12px;">✅ '+esc(f.progress||'완료')+'</div>'}
+      </div>
+    </div>`).join('');
+}
+function addFeedbackItem() {
+  const issue = prompt('이슈 내용을 입력하세요:');
+  const client = prompt('업체명:');
+  if(!issue||!client) return;
+  if(!state.weeklyFeedback) state.weeklyFeedback = [];
+  state.weeklyFeedback.push({id:'wf'+Date.now(),client,issue,managerFeedback:'',status:'open',progress:''});
+  saveState(); renderFeedback();
+  showToast('이슈가 등록되었습니다.');
+}
+function resolveFeedback(id) {
+  const inp = document.getElementById('fb_'+id);
+  const progress = inp ? inp.value : '완료';
+  const item = (state.weeklyFeedback||[]).find(f=>f.id===id);
+  if(item){item.status='resolved';item.progress=progress||'완료';saveState();renderFeedback();showToast('이슈가 완료 처리되었습니다.');}
+}
+
+// --- REQUESTS ---
+function submitRequest(type) {
+  if(!state.requests) state.requests = [];
+  let details = '';
+  if(type==='invoice') details = '업체: '+(document.getElementById('reqInvClient').value||'-')+', 발행월: '+(document.getElementById('reqInvMonth').value||'-')+', 사유: '+(document.getElementById('reqInvReason').value||'-');
+  else if(type==='supplies') details = (document.getElementById('reqSupplyType').value)+' x '+(document.getElementById('reqSupplyQty').value);
+  else if(type==='leave') details = (document.getElementById('reqLeaveStart').value||'?')+'~'+(document.getElementById('reqLeaveEnd').value||'?')+' '+(document.getElementById('reqLeaveType').value);
+  else if(type==='education') details = (document.getElementById('reqEduName').value||'-')+' ('+(document.getElementById('reqEduDate').value||'-')+')';
+  else if(type==='lunch') details = document.getElementById('reqLunch').value||'-';
+  else if(type==='snack') details = document.getElementById('reqSnack').value||'-';
+  const typeMap = {invoice:'세금계산서',supplies:'비품',leave:'휴가',education:'교육',lunch:'점심',snack:'간식'};
+  state.requests.push({id:'r'+Date.now(),type:typeMap[type]||type,details,date:new Date().toLocaleDateString('ko-KR'),status:'접수'});
+  saveState(); renderRequestHistory();
+  showToast((typeMap[type]||type)+' 요청이 제출되었습니다.');
+  addNotification((typeMap[type]||type)+' 요청이 접수되었습니다.');
+}
+function renderRequestHistory() {
+  const body = document.getElementById('requestHistory');
+  if(!body) return;
+  body.innerHTML = (state.requests||[]).slice(-10).reverse().map(r=>`<tr><td>${esc(r.type)}</td><td>${esc(r.details)}</td><td>${r.date}</td><td><span class="tag-sm tag-pending">${r.status}</span></td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--gray-400);">아직 요청 내역이 없습니다.</td></tr>';
+}
+
+// --- MANUAL ---
+function renderManual() {
+  const list = document.getElementById('manualList');
+  const forms = document.getElementById('formsList');
+  if(!list) return;
+  const manuals = [
+    {title:'부가세 신고 절차',desc:'부가세 신고 A to Z 가이드'},
+    {title:'원천세 신고 매뉴얼',desc:'매월 원천세 신고 체크리스트'},
+    {title:'법인세 결산 가이드',desc:'12월 결산법인 법인세 절차'},
+    {title:'연말정산 업무 가이드',desc:'연말정산 시기별 업무 안내'},
+    {title:'신규 업체 등록 절차',desc:'수임 등록부터 세무대리 위임까지'},
+    {title:'홈택스 EDI 설정 방법',desc:'전자신고 EDI 연결 가이드'}
+  ];
+  list.innerHTML = manuals.map(m=>'<div class="manual-item"><h4>📘 '+m.title+'</h4><p>'+m.desc+'</p></div>').join('');
+  const formItems = [
+    {title:'세무대리 위임장',desc:'표준 세무대리 위임장 양식'},
+    {title:'기장료 변경 통보서',desc:'기장료 변경시 고객 안내 양식'},
+    {title:'세금계산서 발급 요청서',desc:'내부 세금계산서 발급 요청 양식'},
+    {title:'소득금액증명원 신청서',desc:'소득금액증명원 발급 신청 양식'}
+  ];
+  forms.innerHTML = formItems.map(f=>'<div class="manual-item"><h4>📝 '+f.title+'</h4><p>'+f.desc+'</p></div>').join('');
+}
+function filterManual() {
+  const q = (document.getElementById('manualSearch').value||'').toLowerCase();
+  document.querySelectorAll('#panel-manual .manual-item').forEach(item=>{
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+// --- COMMUNICATION ---
+function renderComm() {
+  if(!state.announcements) state.announcements = [
+    {id:'ann1',date:'2026-03-25',title:'3월 부가세 신고 마감 안내',content:'3월 31일까지 부가세 신고를 완료해주세요.',pinned:true},
+    {id:'ann2',date:'2026-03-20',title:'4월 워크숍 안내',content:'4월 둘째주 금요일 팀 워크숍이 예정되어 있습니다.',pinned:false}
+  ];
+  if(!state.meetings) state.meetings = [
+    {id:'mt1',date:'2026-03-25',title:'주간 팀 미팅',content:'부가세 신고 진행 현황 공유, 신규 업체 배분 논의'}
+  ];
+  const annList = document.getElementById('announcementList');
+  if(annList) annList.innerHTML = state.announcements.map(a=>`<div class="feed-item"><div class="feed-head"><span class="feed-title">${a.pinned?'📌 ':''}${esc(a.title)}</span><span class="feed-time">${a.date}</span></div><div class="feed-body">${esc(a.content)}</div></div>`).join('');
+  const mtList = document.getElementById('meetingList');
+  if(mtList) mtList.innerHTML = state.meetings.map(m=>`<div class="feed-item"><div class="feed-head"><span class="feed-title">${esc(m.title)}</span><span class="feed-time">${m.date}</span></div><div class="feed-body">${esc(m.content)}</div></div>`).join('');
+  const colList = document.getElementById('colleagueList');
+  if(colList) colList.innerHTML = (state.staffMembers||[]).filter(s=>!s.leaveDate).map(s=>`<div style="padding:8px 0;border-bottom:1px solid var(--gray-100);font-size:13px;display:flex;justify-content:space-between;"><span>👤 ${esc(s.name)}</span><span style="color:var(--gray-500);">${s.team} / ${s.role}</span></div>`).join('');
+  renderLeaveCalendar();
+}
+function renderLeaveCalendar() {
+  const cal = document.getElementById('leaveCalendar');
+  if(!cal) return;
+  const now = new Date();
+  const year = now.getFullYear(), month = now.getMonth();
+  const firstDay = new Date(year,month,1).getDay();
+  const daysInMonth = new Date(year,month+1,0).getDate();
+  let html = '<div class="cal-grid"><div class="cal-header">일</div><div class="cal-header">월</div><div class="cal-header">화</div><div class="cal-header">수</div><div class="cal-header">목</div><div class="cal-header">금</div><div class="cal-header">토</div>';
+  for(let i=0;i<firstDay;i++) html += '<div class="cal-day"></div>';
+  for(let d=1;d<=daysInMonth;d++) {
+    const isToday = d===now.getDate();
+    html += '<div class="cal-day'+(isToday?' today':'')+'">'+ d +'</div>';
+  }
+  html += '</div>';
+  cal.innerHTML = html;
+}
+function addAnnouncement() {
+  const title = prompt('공지 제목:');
+  const content = prompt('공지 내용:');
+  if(!title) return;
+  if(!state.announcements) state.announcements = [];
+  state.announcements.unshift({id:'ann'+Date.now(),date:new Date().toLocaleDateString('ko-KR'),title,content:content||'',pinned:false});
+  saveState(); renderComm();
+  showToast('공지가 등록되었습니다.');
+}
+function addMeeting() {
+  const title = prompt('회의 제목:');
+  const content = prompt('회의 내용:');
+  if(!title) return;
+  if(!state.meetings) state.meetings = [];
+  state.meetings.unshift({id:'mt'+Date.now(),date:new Date().toLocaleDateString('ko-KR'),title,content:content||''});
+  saveState(); renderComm();
+  showToast('회의기록이 추가되었습니다.');
+}
+
+// --- SETTLEMENT ---
+function renderSettle() {
+  if(!state.settlements) state.settlements = [
+    {id:'st1',clientId:'c3',type:'분기결산',expectedDate:'2026-04-15',reason:'1분기 결산',status:'진행중'},
+    {id:'st2',clientId:'c1',type:'월결산',expectedDate:'2026-04-05',reason:'3월 월결산',status:'대기'}
+  ];
+  if(!state.consulting) state.consulting = [
+    {id:'cs1',clientId:'c4',type:'법인전환',status:'진행중',progress:60,notes:'법인설립 서류 준비중'},
+    {id:'cs2',clientId:'c2',type:'법인전환',status:'검토중',progress:20,notes:'법인전환 타당성 분석중'}
+  ];
+  const body = document.getElementById('settleBody');
+  if(body) body.innerHTML = state.settlements.map(s=>{
+    const client = (state.clients||[]).find(c=>c.id===s.clientId);
+    return `<tr><td>${client?esc(client.name):'-'}</td><td>${s.type}</td><td>${s.expectedDate}</td><td>${esc(s.reason)}</td><td><span class="tag-sm ${s.status==='진행중'?'tag-progress':s.status==='완료'?'tag-resolved':'tag-open'}">${s.status}</span></td><td><button class="btn btn-sm" onclick="showToast('결산 상태가 업데이트되었습니다.')">완료</button></td></tr>`;
+  }).join('');
+  const board = document.getElementById('consultBoard');
+  if(board) board.innerHTML = state.consulting.map(c=>{
+    const client = (state.clients||[]).find(cl=>cl.id===c.clientId);
+    return `<div class="consult-card"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><strong>${client?esc(client.name):'-'}</strong><span class="consult-status ${c.status==='진행중'?'status-ing':c.status==='완료'?'status-done':'status-wait'}">${c.status}</span></div><div style="font-size:12px;color:var(--gray-500);margin-bottom:8px;">${esc(c.notes)}</div><div style="font-size:12px;">진행률: ${c.progress}%</div><div class="prog-bar"><div class="prog-fill" style="width:${c.progress}%;background:var(--primary);"></div></div></div>`;
+  }).join('');
+}
+function addSettlement() {
+  const clientName = prompt('업체명:');
+  const type = prompt('결산유형 (분기결산/월결산):') || '월결산';
+  if(!clientName) return;
+  if(!state.settlements) state.settlements = [];
+  state.settlements.push({id:'st'+Date.now(),clientId:'',type,expectedDate:'',reason:clientName,status:'대기'});
+  saveState(); renderSettle();
+  showToast('결산이 등록되었습니다.');
+}
+
+// --- ADMIN: DASHBOARD ---
+function renderDashboard() {
+  const kpi = document.getElementById('dashKpi');
+  if(!kpi) return;
+  const totalVat = (state.vatList||[]).length;
+  const doneVat = (state.vatList||[]).filter(v=>v.checks&&v.checks.approve).length;
+  const vatRate = totalVat ? Math.round(doneVat/totalVat*100) : 0;
+  const totalApprovals = (state.approvals||[]).length;
+  const pendingApprovals = (state.approvals||[]).filter(a=>a.status==='pending').length;
+  const approvalRate = totalApprovals ? Math.round((totalApprovals-pendingApprovals)/totalApprovals*100) : 0;
+  const docReceived = (state.vatList||[]).filter(v=>v.dataStatus==='수령'||v.dataStatus==='완료'||v.dataStatus==='전자').length;
+  const docRate = totalVat ? Math.round(docReceived/totalVat*100) : 0;
+  const totalBillings = (state.billings||[]).reduce((s,b)=>s+b.amount,0);
+
+  kpi.innerHTML = `
+    <div class="kpi-card"><div class="kpi-val">${vatRate}%</div><div class="kpi-label">전체 신고율</div></div>
+    <div class="kpi-card"><div class="kpi-val">${approvalRate}%</div><div class="kpi-label">결재 처리율</div></div>
+    <div class="kpi-card"><div class="kpi-val">${docRate}%</div><div class="kpi-label">자료수령률</div></div>
+    <div class="kpi-card"><div class="kpi-val">${(totalBillings/10000).toFixed(0)}만</div><div class="kpi-label">이번달 매출</div></div>
+    <div class="kpi-card"><div class="kpi-val">${pendingApprovals}</div><div class="kpi-label">결재대기</div></div>`;
+
+  const teamCompare = document.getElementById('dashTeamCompare');
+  if(teamCompare) teamCompare.innerHTML = `
+    <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>기장1팀</span><span>72%</span></div><div class="prog-bar"><div class="prog-fill" style="width:72%;background:#2563eb;"></div></div></div>
+    <div><div style="display:flex;justify-content:space-between;font-size:13px;"><span>기장2팀</span><span>65%</span></div><div class="prog-bar"><div class="prog-fill" style="width:65%;background:#7c3aed;"></div></div></div>`;
+
+  const warnings = document.getElementById('dashWarnings');
+  if(warnings) {
+    let w = [];
+    if(vatRate < 70) w.push('<div class="desk-alert red">⚠️ 전체 신고율 '+vatRate+'% — 목표(80%) 미달</div>');
+    if(docRate < 70) w.push('<div class="desk-alert yellow">📋 자료수령률 '+docRate+'% — 수령 독촉 필요</div>');
+    if(pendingApprovals > 0) w.push('<div class="desk-alert blue">✅ 미처리 결재 '+pendingApprovals+'건</div>');
+    warnings.innerHTML = w.join('')||'<div style="color:var(--gray-400);font-size:13px;">경고사항 없음 ✅</div>';
+  }
+
+  const feed = document.getElementById('dashFeed');
+  if(feed) feed.innerHTML = (state.notifications||[]).slice(0,8).map(n=>`<div class="feed-item"><div class="feed-head"><span class="feed-title">${esc(n.message)}</span><span class="feed-time">${n.date||''}</span></div></div>`).join('')||'<div style="color:var(--gray-400);font-size:13px;">최근 알림 없음</div>';
+}
+
+// --- ADMIN: PERFORMANCE CENTER ---
+function renderPerfCenter() {
+  const body = document.getElementById('pcStaffBody');
+  if(!body) return;
+  body.innerHTML = (state.staffMembers||[]).filter(s=>!s.leaveDate&&s.role!=='최종관리자').map(s=>{
+    const vr = Math.round(Math.random()*40+40);
+    const ir = Math.round(Math.random()*30+10);
+    const cr = Math.round(Math.random()*30+20);
+    const total = Math.round((vr+ir+cr)/3);
+    const ar = Math.round(Math.random()*30+60);
+    const rr = Math.round(Math.random()*20);
+    const rc = Math.floor(Math.random()*5);
+    return `<tr><td>${esc(s.name)}</td><td>${s.team}</td><td>${vr}%</td><td>${ir}%</td><td>${cr}%</td><td><strong>${total}%</strong></td><td>${ar}%</td><td style="color:${rr>15?'var(--danger)':'var(--success)'}">${rr}%</td><td>${rc}회</td></tr>`;
+  }).join('');
+
+  const apr = document.getElementById('pcApprovalRate');
+  if(apr) apr.innerHTML = '<div style="font-size:13px;"><div style="padding:6px 0;">관리자 결재율: <strong>78%</strong></div><div class="prog-bar"><div class="prog-fill" style="width:78%;background:var(--primary);"></div></div><p style="font-size:12px;color:var(--gray-500);margin-top:6px;">결재율 80% 이상 유지 권장</p></div>';
+
+  const docRate = document.getElementById('pcDocRate');
+  if(docRate) {
+    const received = (state.vatList||[]).filter(v=>v.dataStatus==='수령'||v.dataStatus==='완료'||v.dataStatus==='전자').length;
+    const total = (state.vatList||[]).length;
+    const rate = total ? Math.round(received/total*100) : 0;
+    docRate.innerHTML = `<div style="font-size:13px;"><div style="padding:6px 0;">자료수령률: <strong>${rate}%</strong> (${received}/${total}건)</div><div class="prog-bar"><div class="prog-fill" style="width:${rate}%;background:${rate>=70?'var(--success)':'var(--warning)'}"></div></div></div>`;
+  }
+}
+
+// --- NOTIFICATION SYSTEM ---
+function addNotification(message) {
+  if(!state.notifications) state.notifications = [];
+  state.notifications.unshift({id:'n'+Date.now(),message,date:new Date().toLocaleDateString('ko-KR'),read:false});
+  if(state.notifications.length>50) state.notifications = state.notifications.slice(0,50);
+  saveState();
+  updateNotifBadge();
+}
+function updateNotifBadge() {
+  const badge = document.getElementById('notifBadge');
+  const unread = (state.notifications||[]).filter(n=>!n.read).length + loginAttemptLogs.length;
+  if(badge) { badge.textContent = unread; badge.classList.toggle('show', unread > 0); }
+}
 </script>
 
 <div class="modal-overlay" id="agAnswerModal" style="display:none;">
@@ -3450,4 +4118,4 @@ window.saveNotionPages=saveNotionPages;
   </div>
 </div>
 </body>
-  </html>
+</html>
