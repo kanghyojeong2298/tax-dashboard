@@ -185,41 +185,6 @@
   #panel-agent .log-user{font-weight:600;color:#6c5ce7;}
   #panel-agent .log-status{display:inline-block;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:600;}
   #panel-agent .ls-ok{background:#e8f5e9;color:#2e7d32;} #panel-agent .ls-no{background:#fff3e0;color:#e65100;}
-  /* ===== PANEL 5: VAT FILING LIST (부가세신고리스트) ===== */
-  .vat-panel { flex-direction:column; padding:20px; gap:16px; overflow-x:auto; }
-  .vat-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-  .vat-header h1 { font-size:22px; font-weight:700; display:flex; align-items:center; gap:10px; }
-  .vat-filters { display:flex; gap:8px; align-items:center; }
-  .vat-filters select { padding:6px 12px; border:1px solid var(--gray-300); border-radius:var(--radius); font-size:13px; }
-  .vat-summary { display:flex; gap:16px; flex-wrap:wrap; }
-  .vat-summary .vs-card { background:white; border-radius:var(--radius); padding:14px 20px; box-shadow:var(--shadow); text-align:center; min-width:120px; }
-  .vs-card .vs-num { font-size:24px; font-weight:700; color:var(--primary); }
-  .vs-card .vs-label { font-size:11px; color:var(--gray-500); margin-top:3px; }
-  .vat-table-wrap { background:white; border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-  .vat-table-wrap .vt-header { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--gray-200); }
-  .vat-table-wrap table { width:100%; border-collapse:collapse; font-size:12px; }
-  .vat-table-wrap th { padding:8px 6px; text-align:center; font-size:11px; font-weight:700; color:var(--gray-500); background:var(--gray-50); border-bottom:2px solid var(--gray-200); white-space:nowrap; }
-  .vat-table-wrap td { padding:6px 5px; text-align:center; border-bottom:1px solid var(--gray-100); font-size:12px; vertical-align:middle; }
-  .vat-table-wrap tr:hover td { background:#f8fafc; }
-  .vat-table-wrap td input[type="number"] { width:80px; padding:4px 6px; border:1px solid var(--gray-200); border-radius:4px; font-size:12px; text-align:right; }
-  .vat-table-wrap td input[type="checkbox"] { width:16px; height:16px; cursor:pointer; accent-color:var(--primary); }
-  .vat-status-btn { padding:3px 8px; border-radius:10px; font-size:10px; font-weight:700; cursor:pointer; border:none; transition:all .15s; }
-  .vst-예정 { background:#dbeafe; color:#1d4ed8; }
-  .vst-요청 { background:#fef3c7; color:#b45309; }
-  .vst-수령 { background:#d1fae5; color:#065f46; }
-  .vst-보류 { background:#fee2e2; color:#991b1b; }
-  .vst-전자 { background:#e0e7ff; color:#3730a3; }
-  .vst-무실적 { background:#f3f4f6; color:#6b7280; }
-  .vst-완료 { background:#16a34a; color:white; }
-  .vat-div-1 { background:#eff6ff; color:#1d4ed8; padding:2px 8px; border-radius:8px; font-size:11px; font-weight:700; }
-  .vat-div-2 { background:#fef3c7; color:#92400e; padding:2px 8px; border-radius:8px; font-size:11px; font-weight:700; }
-  .vat-type-badge { padding:2px 8px; border-radius:8px; font-size:11px; font-weight:600; }
-  .vat-type-법인 { background:#e0e7ff; color:#3730a3; }
-  .vat-type-일반 { background:#d1fae5; color:#065f46; }
-  .vat-type-간이 { background:#fef3c7; color:#92400e; }
-  .vat-actions { display:flex; gap:3px; justify-content:center; }
-  .vat-actions button { width:24px; height:24px; border:none; background:none; cursor:pointer; border-radius:4px; font-size:12px; }
-  .vat-actions button:hover { background:var(--gray-100); }
   /* ===== PANEL 5: STAFF MANAGEMENT ===== */
   .staff-mgmt-panel { flex-direction:column; padding:24px; gap:20px; }
   .staff-mgmt-header { display:flex; justify-content:space-between; align-items:center; }
@@ -245,33 +210,6 @@
   .staff-actions { display:flex; gap:4px; }
   .staff-actions button { width:28px; height:28px; border:none; background:none; cursor:pointer; border-radius:4px; font-size:14px; }
   .staff-actions button:hover { background:var(--gray-100); }
-  /* ===== PANEL 6: BILLING (조정료청구서) ===== */
-  .billing-panel { flex-direction:column; padding:24px; gap:20px; }
-  .billing-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-  .billing-header h1 { font-size:22px; font-weight:700; display:flex; align-items:center; gap:10px; }
-  .billing-filters { display:flex; gap:8px; align-items:center; }
-  .billing-filters select, .billing-filters input { padding:7px 12px; border:1px solid var(--gray-300); border-radius:var(--radius); font-size:13px; }
-  .billing-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
-  .billing-card { background:white; border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); }
-  .billing-card .bc-label { font-size:12px; color:var(--gray-500); margin-bottom:6px; }
-  .billing-card .bc-value { font-size:26px; font-weight:700; color:var(--gray-900); }
-  .billing-card .bc-sub { font-size:11px; color:var(--gray-400); margin-top:4px; }
-  .billing-card.highlight { border-left:4px solid var(--primary); }
-  .billing-card.danger-highlight { border-left:4px solid var(--danger); }
-  .billing-table-wrap { background:white; border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-  .billing-table-wrap .bt-header { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid var(--gray-200); }
-  .billing-table-wrap .bt-header h2 { font-size:16px; font-weight:600; }
-  .billing-table-wrap table { width:100%; border-collapse:collapse; }
-  .billing-table-wrap th { padding:11px 14px; text-align:left; font-size:12px; font-weight:600; color:var(--gray-500); background:var(--gray-50); border-bottom:1px solid var(--gray-200); }
-  .billing-table-wrap td { padding:11px 14px; font-size:13px; border-bottom:1px solid var(--gray-100); }
-  .billing-table-wrap tr:hover td { background:#f8fafc; }
-  .bill-status { padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; }
-  .bill-status.paid { background:var(--success-light); color:var(--success); }
-  .bill-status.unpaid { background:var(--danger-light); color:var(--danger); }
-  .bill-status.partial { background:var(--warning-light); color:var(--warning); }
-  .bill-actions button { padding:4px 10px; font-size:11px; border:1px solid var(--gray-300); border-radius:4px; background:white; cursor:pointer; margin-right:3px; }
-  .bill-actions button:hover { background:var(--gray-50); }
-  .bill-actions button.bill-print { color:var(--primary); border-color:var(--primary); }
   /* ===== PASSWORD MODAL ===== */
   .pw-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; display:none; align-items:center; justify-content:center; }
   .pw-overlay.show { display:flex; }
@@ -601,7 +539,6 @@
     .detail-grid { grid-template-columns:1fr; }
     .approval-kanban { grid-template-columns:1fr; }
     .revenue-summary { grid-template-columns:repeat(2,1fr); }
-    .billing-summary { grid-template-columns:repeat(2,1fr); }
     .topnav-tab span:not(.tab-icon) { display:none; }
   }
 /* ===== NEW TABS STYLES ===== */
@@ -698,12 +635,6 @@
     </div>
     <div class="topnav-tab" onclick="switchTab('revenue')">
       <span class="tab-icon">📊</span><span>매출집계</span>
-    </div>
-    <div class="topnav-tab" onclick="switchTab('vatlist')">
-      <span class="tab-icon">📝</span><span>신고작업</span>
-    </div>
-    <div class="topnav-tab" onclick="switchTab('billing')">
-      <span class="tab-icon">💰</span><span>조정료청구</span>
     </div>
     <div class="topnav-tab" onclick="switchTab('performance')">
       <span class="tab-icon">📈</span><span>나의성과</span>
@@ -1351,80 +1282,6 @@
     </div>
   </div>
 </div>
-<!-- ===== TAB 5: VAT FILING LIST (부가세신고리스트) ===== -->
-<div class="tab-panel vat-panel" id="panel-vatlist">
-  <div class="vat-header">
-    <h1>📝 부가세 신고 리스트</h1>
-    <div class="vat-filters">
-      <select id="vatDivFilter" onchange="renderVatList()">
-        <option value="">전체</option>
-        <option value="1부">1부</option>
-        <option value="2부">2부</option>
-      </select>
-      <select id="vatStatusFilter" onchange="renderVatList()">
-        <option value="">전체 상태</option>
-        <option value="예정">예정</option><option value="요청">요청</option><option value="수령">수령</option>
-        <option value="보류">보류</option><option value="전자">전자</option><option value="무실적">무실적</option><option value="완료">완료</option>
-      </select>
-      <button class="btn btn-primary btn-sm" onclick="openVatModal()">+ 업체 추가</button>
-    </div>
-  </div>
-  <div class="vat-summary" id="vatSummary"></div>
-  <div class="vat-table-wrap">
-    <div class="vt-header">
-      <h2 style="font-size:15px;font-weight:600;">신고 업체 목록</h2>
-      <span id="vatCount" style="font-size:13px;color:var(--gray-500);"></span>
-    </div>
-    <div style="overflow-x:auto;">
-      <table>
-        <thead><tr>
-          <th>구분</th><th>업체명</th><th>사업자번호</th><th>유형</th><th>신고대상</th><th>자료</th>
-          <th>매출세액</th><th>매입세액</th><th>납부세액</th>
-          <th>마감</th><th>전자<br>신고</th><th>결재</th><th>세모<br>발송</th><th>카톡<br>안내</th><th>납부<br>확인</th><th>첨부<br>서류</th><th>수수료</th><th>관리</th>
-        </tr></thead>
-        <tbody id="vatListBody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<!-- ===== TAB 5: BILLING (조정료청구서) ===== -->
-<div class="tab-panel billing-panel" id="panel-billing">
-  <div class="billing-header">
-    <h1>💰 조정료 청구서</h1>
-    <div class="billing-filters">
-      <select id="billYear" onchange="renderBilling()"></select>
-      <select id="billMonth" onchange="renderBilling()">
-        <option value="0">전체</option>
-        <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
-        <option value="4">4월</option><option value="5">5월</option><option value="6">6월</option>
-        <option value="7">7월</option><option value="8">8월</option><option value="9">9월</option>
-        <option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
-      </select>
-      <select id="billStatusFilter" onchange="renderBilling()">
-        <option value="">전체 상태</option>
-        <option value="paid">수납완료</option>
-        <option value="unpaid">미수납</option>
-        <option value="partial">부분수납</option>
-      </select>
-      <button class="btn btn-primary btn-sm" onclick="openBillingModal()">+ 청구서 작성</button>
-    </div>
-  </div>
-  <div class="billing-summary" id="billingSummary"></div>
-  <div class="billing-table-wrap">
-    <div class="bt-header">
-      <h2>청구서 목록</h2>
-      <button class="btn btn-sm" onclick="printAllBills()">🖨️ 일괄 출력</button>
-    </div>
-    <div style="overflow-x:auto;">
-      <table>
-        <thead><tr>
-          <th>No.</th><th>업체명</th><th>담당자</th><th>세목</th><th>청구금액</th><th>수납금액</th><th>미수금액</th><th>청구일</th><th>상태</th><th>관리</th>
-        </tr></thead>
-        <tbody id="billingTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
 <!-- ===== TAB 6: STAFF MANAGEMENT ===== -->
 <div class="tab-panel staff-mgmt-panel" id="panel-staffmgmt">
   <div class="staff-mgmt-header">
@@ -1759,75 +1616,6 @@
   </div>
 </div>
 <!-- VAT Filing Modal -->
-<div class="modal-overlay" id="vatModal">
-  <div class="modal" style="max-width:560px;">
-    <div class="modal-header">
-      <h2 id="vatModalTitle">업체 추가</h2>
-      <button class="btn btn-icon" onclick="closeModal('vatModal')">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>구분 *</label>
-          <select id="vat_div"><option value="1부">1부</option><option value="2부">2부</option></select>
-        </div>
-        <div class="form-group"><label>업체명 *</label><input id="vat_name"></div>
-        <div class="form-group"><label>사업자등록번호</label><input id="vat_bizNo" placeholder="000-00-00000"></div>
-        <div class="form-group">
-          <label>유형 *</label>
-          <select id="vat_type" onchange="toggleVatConvertDate()">
-            <option value="법인">법인</option><option value="일반">일반</option><option value="간이">간이</option><option value="일반(전환)">일반(전환)</option>
-          </select>
-        </div>
-        <div class="form-group" id="vatConvertDateGroup" style="display:none;">
-          <label>전환일자</label><input type="date" id="vat_convertDate">
-        </div>
-        <div class="form-group">
-          <label>신고대상 *</label>
-          <select id="vat_target"><option value="분기">분기</option><option value="반기">반기</option><option value="연간">연간</option></select>
-        </div>
-        <div class="form-group">
-          <label>자료상태</label>
-          <select id="vat_dataStatus">
-            <option value="예정">예정</option><option value="요청">요청</option><option value="수령">수령</option>
-            <option value="보류">보류</option><option value="전자">전자</option><option value="무실적">무실적</option><option value="완료">완료</option>
-          </select>
-        </div>
-        <div class="form-group"><label>매출세액</label><input type="number" id="vat_salesTax" placeholder="0"></div>
-        <div class="form-group"><label>매입세액</label><input type="number" id="vat_purchaseTax" placeholder="0"></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('vatModal')">취소</button>
-      <button class="btn btn-primary" onclick="saveVatItem()">저장</button>
-    </div>
-  </div>
-</div>
-<!-- Billing Modal -->
-<div class="modal-overlay" id="billingModal">
-  <div class="modal" style="max-width:520px;">
-    <div class="modal-header">
-      <h2 id="billingModalTitle">청구서 작성</h2>
-      <button class="btn btn-icon" onclick="closeModal('billingModal')">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group"><label>업체 *</label><select id="bill_client"></select></div>
-        <div class="form-group"><label>세목</label>
-          <select id="bill_taxType"><option value="기장료">기장료</option><option value="부가세 조정료">부가세 조정료</option><option value="법인세 조정료">법인세 조정료</option><option value="원천세 조정료">원천세 조정료</option><option value="소득세 조정료">소득세 조정료</option><option value="연말정산">연말정산</option><option value="기타">기타</option></select>
-        </div>
-        <div class="form-group"><label>청구금액 (원) *</label><input type="number" id="bill_amount" placeholder="0"></div>
-        <div class="form-group"><label>수납금액 (원)</label><input type="number" id="bill_paidAmount" placeholder="0"></div>
-        <div class="form-group"><label>청구일</label><input type="date" id="bill_date"></div>
-        <div class="form-group"><label>비고</label><input id="bill_note" placeholder="메모..."></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('billingModal')">취소</button>
-      <button class="btn btn-primary" onclick="saveBilling()">저장</button>
-    </div>
-  </div>
-</div>
 <!-- Password Gate Modal -->
 <div class="pw-overlay" id="pwOverlay">
   <div class="pw-box">
@@ -2194,7 +1982,7 @@ function actualSwitchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.topnav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('panel-'+tab).classList.add('active');
-  const tabs = ['mydesk','agent','clients','approval','revenue','vatlist','billing','performance','feedback','request','manual','comm','settle','dashboard','perfcenter','staffmgmt','settings'];
+  const tabs = ['mydesk','agent','clients','approval','revenue','performance','feedback','request','manual','comm','settle','dashboard','perfcenter','staffmgmt','settings'];
   const idx = tabs.indexOf(tab);
   if(idx >= 0 && document.querySelectorAll('.topnav-tab')[idx]) {
     document.querySelectorAll('.topnav-tab')[idx].classList.add('active');
@@ -2202,8 +1990,6 @@ function actualSwitchTab(tab) {
   if(tab==='clients') renderClientsTab();
   if(tab==='approval') renderApproval();
   if(tab==='revenue') renderRevenue();
-  if(tab==='vatlist') renderVatList();
-  if(tab==='billing') 
 // Pre-populate example Notion items if empty
 (function(){
   var PRESET_VER='v3';if(localStorage.getItem('taxDash_presetVer')!==PRESET_VER){
@@ -2228,7 +2014,6 @@ function actualSwitchTab(tab) {
 })();
 
 try{loadNotionTokenUI();}catch(e){}
-renderBilling();
   if(tab==='mydesk') renderMyDesk();
   if(tab==='performance') renderPerformance();
   if(tab==='feedback') renderFeedback();
@@ -2847,372 +2632,8 @@ function rvScreen(idx) {
 }
 function initRevenue() { /* 오픈마켓 매출집계는 정적 데이터로 초기화 불필요 */ }
 function renderRevenue() { /* 오픈마켓 매출집계는 정적 UI이므로 별도 렌더링 불필요 */ }
-// ============ TAB 5: VAT FILING LIST (부가세신고리스트) ============
-let editingVatId = null;
-const VAT_STATUSES = ['예정','요청','수령','보류','전자','무실적','완료'];
-function renderVatList() {
-  if(!state.vatList) state.vatList = [];
-  const divFilter = document.getElementById('vatDivFilter').value;
-  const statusFilter = document.getElementById('vatStatusFilter').value;
-  let filtered = state.vatList;
-  if(divFilter) filtered = filtered.filter(v=>v.div===divFilter);
-  if(statusFilter) filtered = filtered.filter(v=>v.dataStatus===statusFilter);
-  // Summary
-  const total = state.vatList.length;
-  const completed = state.vatList.filter(v=>v.dataStatus==='완료').length;
-  const div1 = state.vatList.filter(v=>v.div==='1부').length;
-  const div2 = state.vatList.filter(v=>v.div==='2부').length;
-  const totalPayTax = state.vatList.reduce((s,v)=>s+((v.salesTax||0)-(v.purchaseTax||0)),0);
-  document.getElementById('vatSummary').innerHTML = `
-    <div class="vs-card"><div class="vs-num">${total}</div><div class="vs-label">전체 업체</div></div>
-    <div class="vs-card"><div class="vs-num">${div1}</div><div class="vs-label">1부</div></div>
-    <div class="vs-card"><div class="vs-num">${div2}</div><div class="vs-label">2부</div></div>
-    <div class="vs-card"><div class="vs-num">${completed}</div><div class="vs-label">완료</div></div>
-    <div class="vs-card"><div class="vs-num" style="font-size:18px">${totalPayTax.toLocaleString()}원</div><div class="vs-label">납부세액 합계</div></div>`;
-  document.getElementById('vatCount').textContent = `${filtered.length}건 표시 / 전체 ${total}건`;
-  // Table rows
-  let rows = '';
-  filtered.forEach(v => {
-    const payTax = (v.salesTax||0) - (v.purchaseTax||0);
-    const is2bu = v.div === '2부';
-    const typeLabel = v.type === '일반(전환)' ? `일반(전환 ${v.convertDate||''})` : v.type;
-    const typeClass = v.type.startsWith('일반') ? '일반' : v.type === '법인' ? '법인' : '간이';
-    rows += `<tr>
-      <td><span class="vat-div-${v.div==='1부'?'1':'2'}">${esc(v.div)}</span></td>
-      <td style="text-align:left;font-weight:600;">${esc(v.name)}</td>
-      <td style="font-size:11px;">${esc(v.bizNo||'')}</td>
-      <td><span class="vat-type-badge vat-type-${typeClass}">${esc(typeLabel)}</span></td>
-      <td>${esc(v.target)}</td>
-      <td><button class="vat-status-btn vst-${v.dataStatus}" onclick="cycleVatStatus('${v.id}')">${v.dataStatus}</button></td>
-      <td><input type="number" value="${v.salesTax||0}" onchange="updateVatTax('${v.id}','salesTax',this.value)" style="width:75px;"></td>
-      <td><input type="number" value="${v.purchaseTax||0}" onchange="updateVatTax('${v.id}','purchaseTax',this.value)" style="width:75px;"></td>
-      <td style="font-weight:700;color:${payTax>=0?'var(--danger)':'var(--success)'};">${payTax.toLocaleString()}</td>
-      <td><input type="checkbox" ${v.checks?.close?'checked':''} onchange="updateVatCheck('${v.id}','close',this.checked)"></td>
-      <td><input type="checkbox" ${v.checks?.efile?'checked':''} onchange="updateVatCheck('${v.id}','efile',this.checked)"></td>
-      <td><input type="checkbox" ${v.checks?.approve?'checked':''} onchange="updateVatCheck('${v.id}','approve',this.checked)"></td>
-      <td><input type="checkbox" ${v.checks?.semo?'checked':''} onchange="updateVatCheck('${v.id}','semo',this.checked)"></td>
-      <td><input type="checkbox" ${v.checks?.kakao?'checked':''} onchange="updateVatCheck('${v.id}','kakao',this.checked)"></td>
-      <td><input type="checkbox" ${v.checks?.payment?'checked':''} onchange="updateVatCheck('${v.id}','payment',this.checked)"></td>
-      <td><input type="checkbox" ${v.checks?.attach?'checked':''} onchange="updateVatCheck('${v.id}','attach',this.checked)"></td>
-      <td>${is2bu?`<input type="number" value="${v.fee||0}" onchange="updateVatFee('${v.id}',this.value)" style="width:70px;">`:'<span style="color:var(--gray-300);">-</span>'}</td>
-      <td><div class="vat-actions">
-        <button onclick="editVatItem('${v.id}')" title="수정">✏️</button>
-        <button onclick="deleteVatItem('${v.id}')" title="삭제">🗑️</button>
-      </div></td>
-    </tr>`;
-  });
-  document.getElementById('vatListBody').innerHTML = rows || '<tr><td colspan="18" style="text-align:center;padding:30px;color:var(--gray-400);">등록된 업체가 없습니다.</td></tr>';
-}
-function cycleVatStatus(id) {
-  const v = state.vatList.find(x=>x.id===id);
-  if(!v) return;
-  const idx = VAT_STATUSES.indexOf(v.dataStatus);
-  v.dataStatus = VAT_STATUSES[(idx+1)%VAT_STATUSES.length];
-  saveState();
-  renderVatList();
-}
-function updateVatTax(id, field, val) {
-  const v = state.vatList.find(x=>x.id===id);
-  if(!v) return;
-  v[field] = parseInt(val)||0;
-  saveState();
-  renderVatList();
-}
-function updateVatCheck(id, field, checked) {
-  const v = state.vatList.find(x=>x.id===id);
-  if(!v) return;
-  if(!v.checks) v.checks = {};
-  v.checks[field] = checked;
-  saveState();
-}
-function updateVatFee(id, val) {
-  const v = state.vatList.find(x=>x.id===id);
-  if(!v) return;
-  v.fee = parseInt(val)||0;
-  saveState();
-}
-function toggleVatConvertDate() {
-  const sel = document.getElementById('vat_type').value;
-  document.getElementById('vatConvertDateGroup').style.display = sel==='일반(전환)' ? 'block' : 'none';
-}
-function openVatModal(id) {
-  editingVatId = id || null;
-  document.getElementById('vatModalTitle').textContent = id ? '업체 수정' : '업체 추가';
-  if(id) {
-    const v = state.vatList.find(x=>x.id===id);
-    if(!v) return;
-    document.getElementById('vat_div').value = v.div||'1부';
-    document.getElementById('vat_name').value = v.name||'';
-    document.getElementById('vat_bizNo').value = v.bizNo||'';
-    document.getElementById('vat_type').value = v.type||'일반';
-    document.getElementById('vat_convertDate').value = v.convertDate||'';
-    document.getElementById('vat_target').value = v.target||'분기';
-    document.getElementById('vat_dataStatus').value = v.dataStatus||'예정';
-    document.getElementById('vat_salesTax').value = v.salesTax||'';
-    document.getElementById('vat_purchaseTax').value = v.purchaseTax||'';
-    toggleVatConvertDate();
-  } else {
-    ['vat_name','vat_bizNo','vat_convertDate','vat_salesTax','vat_purchaseTax'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('vat_div').value='1부';
-    document.getElementById('vat_type').value='일반';
-    document.getElementById('vat_target').value='분기';
-    document.getElementById('vat_dataStatus').value='예정';
-    document.getElementById('vatConvertDateGroup').style.display='none';
-  }
-  openModal('vatModal');
-}
-function editVatItem(id) { openVatModal(id); }
-function saveVatItem() {
-  const name = document.getElementById('vat_name').value.trim();
-  if(!name) { showToast('업체명을 입력하세요.'); return; }
-  if(!state.vatList) state.vatList = [];
-  const data = {
-    div: document.getElementById('vat_div').value,
-    name: name,
-    bizNo: document.getElementById('vat_bizNo').value.trim(),
-    type: document.getElementById('vat_type').value,
-    convertDate: document.getElementById('vat_type').value==='일반(전환)' ? document.getElementById('vat_convertDate').value : '',
-    target: document.getElementById('vat_target').value,
-    dataStatus: document.getElementById('vat_dataStatus').value,
-    salesTax: parseInt(document.getElementById('vat_salesTax').value)||0,
-    purchaseTax: parseInt(document.getElementById('vat_purchaseTax').value)||0
-  };
-  if(editingVatId) {
-    const idx = state.vatList.findIndex(v=>v.id===editingVatId);
-    if(idx>=0) { data.checks = state.vatList[idx].checks; data.fee = state.vatList[idx].fee; Object.assign(state.vatList[idx], data); }
-    showToast('업체 정보가 수정되었습니다.');
-  } else {
-    data.id = 'v' + Date.now();
-    data.checks = {close:false,efile:false,approve:false,semo:false,kakao:false,payment:false,attach:false};
-    data.fee = 0;
-    state.vatList.push(data);
-    showToast('업체가 추가되었습니다.');
-  }
-  saveState();
-  closeModal('vatModal');
-  renderVatList();
-}
-function deleteVatItem(id) {
-  const v = state.vatList.find(x=>x.id===id);
-  if(!v) return;
-  if(!confirm(`${v.name} 업체를 삭제하시겠습니까?`)) return;
-  state.vatList = state.vatList.filter(x=>x.id!==id);
-  saveState();
-  renderVatList();
-  showToast('업체가 삭제되었습니다.');
-}
-// ============ TAB 5: BILLING (조정료청구서) ============
-let editingBillId = null;
-function initBilling() {
-  const sel=document.getElementById('billYear');
-  const y=new Date().getFullYear();
-  for(let i=y;i>=y-3;i--) sel.innerHTML+=`<option value="${i}">${i}년</option>`;
-}
-function renderBilling() {
-  if(!state.billings) state.billings = [];
-  const year = parseInt(document.getElementById('billYear').value)||new Date().getFullYear();
-  const month = parseInt(document.getElementById('billMonth').value)||0;
-  const statusFilter = document.getElementById('billStatusFilter').value;
-  let filtered = state.billings.filter(b => {
-    if(!b.date) return true;
-    const d = new Date(b.date);
-    if(d.getFullYear() !== year) return false;
-    if(month && (d.getMonth()+1) !== month) return false;
-    return true;
-  });
-  if(statusFilter) {
-    filtered = filtered.filter(b => {
-      const s = getBillStatus(b);
-      return s === statusFilter;
-    });
-  }
-  // Summary
-  const totalAmount = filtered.reduce((s,b)=>s+(b.amount||0),0);
-  const totalPaid = filtered.reduce((s,b)=>s+(b.paidAmount||0),0);
-  const totalUnpaid = totalAmount - totalPaid;
-  const unpaidCount = filtered.filter(b=>getBillStatus(b)==='unpaid').length;
-  document.getElementById('billingSummary').innerHTML = `
-    <div class="billing-card highlight"><div class="bc-label">총 청구금액</div><div class="bc-value">${totalAmount.toLocaleString()}원</div><div class="bc-sub">${filtered.length}건</div></div>
-    <div class="billing-card"><div class="bc-label">수납 완료</div><div class="bc-value" style="color:var(--success)">${totalPaid.toLocaleString()}원</div><div class="bc-sub">수납율 ${totalAmount?Math.round(totalPaid/totalAmount*100):0}%</div></div>
-    <div class="billing-card danger-highlight"><div class="bc-label">미수금액</div><div class="bc-value" style="color:var(--danger)">${totalUnpaid.toLocaleString()}원</div><div class="bc-sub">미수납 ${unpaidCount}건</div></div>
-    <div class="billing-card"><div class="bc-label">업체 수</div><div class="bc-value">${new Set(filtered.map(b=>b.clientId)).size}</div><div class="bc-sub">청구 대상</div></div>`;
-  // Table
-  let rows = '';
-  filtered.forEach((b,i) => {
-    const c = state.clients.find(x=>x.id===b.clientId);
-    const staff = c ? state.staff.find(s=>s.id===c.staffId) : null;
-    const status = getBillStatus(b);
-    const statusLabel = {paid:'수납완료',unpaid:'미수납',partial:'부분수납'}[status];
-    const unpaid = (b.amount||0) - (b.paidAmount||0);
-    rows += `<tr>
-      <td>${i+1}</td>
-      <td><strong>${esc(c?.name||'알수없음')}</strong></td>
-      <td>${esc(staff?.name||'-')}</td>
-      <td>${esc(b.taxType||'-')}</td>
-      <td style="text-align:right;font-weight:600;">${(b.amount||0).toLocaleString()}원</td>
-      <td style="text-align:right;color:var(--success);">${(b.paidAmount||0).toLocaleString()}원</td>
-      <td style="text-align:right;color:${unpaid>0?'var(--danger)':'var(--gray-400)'};">${unpaid.toLocaleString()}원</td>
-      <td>${b.date||'-'}</td>
-      <td><span class="bill-status ${status}">${statusLabel}</span></td>
-      <td><div class="bill-actions">
-        <button onclick="editBilling('${b.id}')" title="수정">✏️</button>
-        <button class="bill-print" onclick="printBill('${b.id}')" title="출력">🖨️</button>
-        <button onclick="deleteBilling('${b.id}')" title="삭제">🗑️</button>
-      </div></td>
-    </tr>`;
-  });
-  document.getElementById('billingTableBody').innerHTML = rows || '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--gray-400);">청구서가 없습니다.</td></tr>';
-}
-function getBillStatus(b) {
-  if((b.paidAmount||0) >= (b.amount||0)) return 'paid';
-  if((b.paidAmount||0) > 0) return 'partial';
-  return 'unpaid';
-}
-function openBillingModal(id) {
-  editingBillId = id || null;
-  document.getElementById('billingModalTitle').textContent = id ? '청구서 수정' : '청구서 작성';
-  // Populate client select
-  const sel = document.getElementById('bill_client');
-  sel.innerHTML = state.clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
-  if(id) {
-    const b = state.billings.find(x=>x.id===id);
-    if(!b) return;
-    sel.value = b.clientId;
-    document.getElementById('bill_taxType').value = b.taxType||'기장료';
-    document.getElementById('bill_amount').value = b.amount||'';
-    document.getElementById('bill_paidAmount').value = b.paidAmount||'';
-    document.getElementById('bill_date').value = b.date||'';
-    document.getElementById('bill_note').value = b.note||'';
-  } else {
-    document.getElementById('bill_amount').value = '';
-    document.getElementById('bill_paidAmount').value = '0';
-    document.getElementById('bill_date').value = new Date().toISOString().slice(0,10);
-    document.getElementById('bill_note').value = '';
-  }
-  openModal('billingModal');
-}
-function editBilling(id) { openBillingModal(id); }
-function saveBilling() {
-  const clientId = document.getElementById('bill_client').value;
-  const amount = parseInt(document.getElementById('bill_amount').value)||0;
-  if(!clientId || !amount) { showToast('업체와 금액을 입력하세요.'); return; }
-  if(!state.billings) state.billings = [];
-  const data = {
-    clientId: clientId,
-    taxType: document.getElementById('bill_taxType').value,
-    amount: amount,
-    paidAmount: parseInt(document.getElementById('bill_paidAmount').value)||0,
-    date: document.getElementById('bill_date').value,
-    note: document.getElementById('bill_note').value.trim()
-  };
-  if(editingBillId) {
-    const idx = state.billings.findIndex(b=>b.id===editingBillId);
-    if(idx>=0) Object.assign(state.billings[idx], data);
-    showToast('청구서가 수정되었습니다.');
-  } else {
-    data.id = 'b' + Date.now();
-    state.billings.push(data);
-    showToast('청구서가 작성되었습니다.');
-  }
-  saveState();
-  closeModal('billingModal');
-  
-// Pre-populate example Notion items if empty
-(function(){
-  var PRESET_VER='v3';if(localStorage.getItem('taxDash_presetVer')!==PRESET_VER){
-    var pages = loadNotionPages();
-    var lifePageId = null;
-    // Check if a life/생활편 page exists, if not create one
-    var lifePage = pages.find(function(p){return p.name.indexOf('생활')!==-1;});
-    if(!lifePage){
-      lifePageId = 'np_life_' + Date.now();
-      pages.push({id:lifePageId,name:'생활편 안내',url:'',cat:'사내규정',interval:'매일',status:'동기화완료',syncedAt:new Date().toLocaleString('ko-KR'),itemCount:5});
-      saveNotionPages(pages);
-    } else { lifePageId = lifePage.id; }
-    var defaultItems = [
-      {id:'ni_d1',pageId:lifePageId,pageName:'생활편 안내',question:'점심시간',answer:'점심시간은 <b>12:00 ~ 13:00</b> (1시간)입니다.<br>배달을 시키실 경우 <b>11:30까지</b> 본인 이름에 체크해주세요.',keywords:'점심,시간,식사,밥,런치,12시,몇시,점심시간'},
-      {id:'ni_d6',pageId:lifePageId,pageName:'생활편 안내',question:'식대 한도',answer:'식대 한도는 다음과 같습니다.<br><b>수요일:</b> 14,000원<br><b>나머지 요일:</b> 12,000원',keywords:'식대,한도,얼마,식비,밥값,식사비,점심값,수요일'},
-      {id:'ni_d2',pageId:lifePageId,pageName:'생활편 안내',question:'출퇴근 시간',answer:'<b>출근:</b> 오전 9:00<br><b>퇴근:</b> 오후 6:00',keywords:'출근,퇴근,시간,근무,출퇴근,몇시,출근시간,퇴근시간'}
-    ];
-    defaultItems.forEach(function(d){d.addedAt=new Date().toISOString();});
-    saveNotionItems(defaultItems);
-    localStorage.setItem('taxDash_presetVer',PRESET_VER);
-  }
-})();
-
-try{loadNotionTokenUI();}catch(e){}
-renderBilling();
-}
-function deleteBilling(id) {
-  if(!confirm('이 청구서를 삭제하시겠습니까?')) return;
-  state.billings = state.billings.filter(b=>b.id!==id);
-  saveState();
-  
-// Pre-populate example Notion items if empty
-(function(){
-  var PRESET_VER='v3';if(localStorage.getItem('taxDash_presetVer')!==PRESET_VER){
-    var pages = loadNotionPages();
-    var lifePageId = null;
-    // Check if a life/생활편 page exists, if not create one
-    var lifePage = pages.find(function(p){return p.name.indexOf('생활')!==-1;});
-    if(!lifePage){
-      lifePageId = 'np_life_' + Date.now();
-      pages.push({id:lifePageId,name:'생활편 안내',url:'',cat:'사내규정',interval:'매일',status:'동기화완료',syncedAt:new Date().toLocaleString('ko-KR'),itemCount:5});
-      saveNotionPages(pages);
-    } else { lifePageId = lifePage.id; }
-    var defaultItems = [
-      {id:'ni_d1',pageId:lifePageId,pageName:'생활편 안내',question:'점심시간',answer:'점심시간은 <b>12:00 ~ 13:00</b> (1시간)입니다.<br>배달을 시키실 경우 <b>11:30까지</b> 본인 이름에 체크해주세요.',keywords:'점심,시간,식사,밥,런치,12시,몇시,점심시간'},
-      {id:'ni_d6',pageId:lifePageId,pageName:'생활편 안내',question:'식대 한도',answer:'식대 한도는 다음과 같습니다.<br><b>수요일:</b> 14,000원<br><b>나머지 요일:</b> 12,000원',keywords:'식대,한도,얼마,식비,밥값,식사비,점심값,수요일'},
-      {id:'ni_d2',pageId:lifePageId,pageName:'생활편 안내',question:'출퇴근 시간',answer:'<b>출근:</b> 오전 9:00<br><b>퇴근:</b> 오후 6:00',keywords:'출근,퇴근,시간,근무,출퇴근,몇시,출근시간,퇴근시간'}
-    ];
-    defaultItems.forEach(function(d){d.addedAt=new Date().toISOString();});
-    saveNotionItems(defaultItems);
-    localStorage.setItem('taxDash_presetVer',PRESET_VER);
-  }
-})();
-
-try{loadNotionTokenUI();}catch(e){}
-renderBilling();
-  showToast('청구서가 삭제되었습니다.');
-}
-function printBill(id) {
-  const b = state.billings.find(x=>x.id===id);
-  if(!b) return;
-  const c = state.clients.find(x=>x.id===b.clientId);
-  const staff = c ? state.staff.find(s=>s.id===c.staffId) : null;
-  const w = window.open('','_blank','width=800,height=600');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>조정료 청구서</title>
-  <style>body{font-family:'Malgun Gothic',sans-serif;padding:40px;color:#333;}
-  h1{text-align:center;border-bottom:3px double #333;padding-bottom:10px;margin-bottom:30px;}
-  table{width:100%;border-collapse:collapse;margin:20px 0;}
-  th,td{border:1px solid #999;padding:10px 14px;text-align:left;}
-  th{background:#f5f5f5;font-weight:600;width:30%;}
-  .amount{font-size:22px;font-weight:700;color:#1a1a1a;text-align:center;padding:20px;}
-  .footer{margin-top:40px;text-align:center;font-size:12px;color:#888;}
-  .stamp{text-align:right;margin-top:30px;font-size:14px;}
-  @media print{body{padding:20px;}}
-  </style></head><body>
-  <h1>조 정 료 청 구 서</h1>
-  <table>
-  <tr><th>업체명</th><td>${esc(c?.name||'')}</td><th>사업자번호</th><td>${esc(c?.bizNo||'')}</td></tr>
-  <tr><th>대표자</th><td>${esc(c?.ceo||'')}</td><th>담당자</th><td>${esc(staff?.name||'')}</td></tr>
-  <tr><th>세목</th><td>${esc(b.taxType||'')}</td><th>청구일</th><td>${b.date||''}</td></tr>
-  </table>
-  <div class="amount">청구금액: ${(b.amount||0).toLocaleString()} 원</div>
-  <table>
-  <tr><th>수납금액</th><td>${(b.paidAmount||0).toLocaleString()} 원</td></tr>
-  <tr><th>미수금액</th><td>${((b.amount||0)-(b.paidAmount||0)).toLocaleString()} 원</td></tr>
-  <tr><th>비고</th><td>${esc(b.note||'-')}</td></tr>
-  </table>
-  <div class="stamp">세무법인 엑스퍼트 강남점</div>
-  <div class="footer">본 청구서는 전산 발행되었습니다.</div>
-  </body></html>`);
-  w.document.close();
-  setTimeout(()=>w.print(), 300);
-}
-function printAllBills() {
-  showToast('일괄 출력 기능은 각 청구서의 🖨️ 버튼을 이용해주세요.');
-}
+function renderVatList() { /* removed */ }
+function renderBilling() { /* removed */ }
 // ============ TAB 6: STAFF MANAGEMENT ============
 let editingStaffMgmtId = null;
 function renderStaffMgmt() {
@@ -3342,7 +2763,7 @@ function handleImport(e){
   const file=e.target.files[0]; if(!file)return;
   const reader=new FileReader();
   reader.onload=function(ev){
-    try{const data=JSON.parse(ev.target.result);if(data.staff&&data.clients){state=data;saveState();renderClientsTab();renderApproval();renderRevenue();renderVatList();
+    try{const data=JSON.parse(ev.target.result);if(data.staff&&data.clients){state=data;saveState();renderClientsTab();renderApproval();renderRevenue();
 // Pre-populate example Notion items if empty
 (function(){
   var PRESET_VER='v3';if(localStorage.getItem('taxDash_presetVer')!==PRESET_VER){
@@ -3367,19 +2788,17 @@ function handleImport(e){
 })();
 
 try{loadNotionTokenUI();}catch(e){}
-renderBilling();if(isAdminAuth)renderStaffMgmt();showToast('데이터를 불러왔습니다.');}else{showToast('올바르지 않은 파일입니다.');}}catch(err){showToast('파일을 읽을 수 없습니다.');}
+if(isAdminAuth)renderStaffMgmt();showToast('데이터를 불러왔습니다.');}else{showToast('올바르지 않은 파일입니다.');}}catch(err){showToast('파일을 읽을 수 없습니다.');}
   }; reader.readAsText(file); e.target.value='';
 }
 // Close modals on overlay click
 document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show');});});
 // Init
 initRevenue();
-initBilling();
 loadLoginLogs();
 renderClientsTab();
 renderApproval();
 renderRevenue();
-renderVatList();
 
 // Pre-populate example Notion items if empty
 (function(){
@@ -3405,7 +2824,6 @@ renderVatList();
 })();
 
 try{loadNotionTokenUI();}catch(e){}
-renderBilling();
 if(isAdminAuth) { renderStaffMgmt(); renderNotifs(); }
 
 
@@ -3741,8 +3159,8 @@ window.editFromDetail=editFromDetail;window.exportData=exportData;window.filterS
 window.handleImport=handleImport;window.importData=importData;window.openBillingModal=openBillingModal;
 window.openClientModal=openClientModal;window.openStaffMgmtModal=openStaffMgmtModal;
 window.openStaffModal=openStaffModal;window.openVatModal=openVatModal;window.printAllBills=printAllBills;
-window.renderBilling=renderBilling;window.renderClients=renderClients;window.renderStaffMgmt=renderStaffMgmt;
-window.renderVatList=renderVatList;window.rvScreen=rvScreen;window.rvTopTab=rvTopTab;
+window.renderClients=renderClients;window.renderStaffMgmt=renderStaffMgmt;
+window.rvScreen=rvScreen;window.rvTopTab=rvTopTab;
 window.saveBilling=saveBilling;window.saveClient=saveClient;window.saveStaff=saveStaff;
 window.saveStaffMgmt=saveStaffMgmt;window.saveVatItem=saveVatItem;window.showToast=showToast;
 window.submitPw=submitPw;window.switchApprovalTax=switchApprovalTax;window.switchTab=switchTab;
