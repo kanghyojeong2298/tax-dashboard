@@ -1,1 +1,2812 @@
-undefined
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>플랫폼 수수료 통합 계산기 v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f3f4f6; color: #1f2937; font-size: 14px; line-height: 1.5; }
+  .app { max-width: 1280px; margin: 0 auto; background: #fff; min-height: 100vh; box-shadow: 0 0 0 1px #e5e7eb; }
+  header.app-header { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; padding: 18px 24px; }
+  .app-header h1 { font-size: 18px; font-weight: 700; }
+  .app-header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  nav.tabs { display: flex; background: #f9fafb; border-bottom: 1px solid #e5e7eb; padding: 0 24px; }
+  nav.tabs button { background: none; border: none; padding: 14px 20px; cursor: pointer; font-size: 13px; color: #6b7280; font-weight: 600; border-bottom: 3px solid transparent; }
+  nav.tabs button:hover { color: #4f46e5; }
+  nav.tabs button.active { color: #4f46e5; border-bottom-color: #4f46e5; background: #fff; }
+
+  .btn { padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 1px solid #d1d5db; background: #fff; color: #374151; cursor: pointer; font-family: inherit; }
+  .btn:hover { background: #f3f4f6; }
+  .btn.primary { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+  .btn.primary:hover { background: #4338ca; }
+  .btn.success { background: #10b981; color: #fff; border-color: #10b981; }
+  .btn.success:hover { background: #059669; }
+  .btn.danger { background: #fff; color: #dc2626; border-color: #fecaca; }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  select, input[type="text"], input[type="date"], input[type="number"] { padding: 7px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; background: #fff; font-family: inherit; }
+
+  .dash-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; gap: 10px; }
+  .dash-top h2 { font-size: 17px; font-weight: 700; }
+  .dash-top .subt { font-size: 12px; color: #6b7280; margin-top: 2px; }
+  .year-chips { display: inline-flex; background: #f3f4f6; border-radius: 8px; padding: 3px; }
+  .year-chip { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #6b7280; cursor: pointer; border: none; background: transparent; }
+  .year-chip.active { background: #fff; color: #4f46e5; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+
+  .saved-banner { margin: 12px 24px 0; padding: 11px 14px; background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; border-radius: 8px; font-size: 12px; }
+  .saved-banner.warn { background: #fef3c7; border-color: #fbbf24; color: #78350f; }
+  .saved-banner strong { font-weight: 700; }
+
+  .period-row { display: flex; gap: 12px; align-items: center; padding: 10px 24px; flex-wrap: wrap; font-size: 12px; color: #6b7280; }
+  .period-row .label { font-weight: 600; }
+
+  /* 회계 계정별 합계 패널 */
+  .account-panel { padding: 8px 24px 4px; }
+  .account-h { font-size: 11px; color: #6b7280; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+  .account-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .account-c { background: #f9fafb; padding: 10px 12px; border-radius: 8px; border: 1px solid #e5e7eb; }
+  .account-c.fee { border-color: #c7d2fe; background: #eef2ff; }
+  .account-c.ad { border-color: #fbcfe8; background: #fdf2f8; }
+  .account-c.ship { border-color: #bae6fd; background: #f0f9ff; }
+  .account-c.tax { border-color: #fed7aa; background: #fff7ed; }
+  .account-c.refund { border-color: #fecaca; background: #fef2f2; }
+  .account-c.etc { border-color: #d1d5db; background: #f9fafb; }
+  .account-l { font-size: 10px; color: #6b7280; font-weight: 600; }
+  .account-v { font-size: 14px; font-weight: 700; color: #1f2937; margin-top: 2px; }
+
+  /* 플랫폼 그룹 */
+  .group-h { padding: 14px 24px 4px; font-size: 13px; font-weight: 700; color: #4b5563; display: flex; justify-content: space-between; align-items: center; }
+  .group-h-sub { font-size: 11px; color: #6b7280; font-weight: 400; }
+
+  .card-grid { padding: 8px 24px 4px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .pl-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px; transition: all .15s; }
+  .pl-card:hover { border-color: #c7d2fe; box-shadow: 0 4px 12px rgba(79,70,229,.08); transform: translateY(-1px); }
+  .pl-card.empty { border-style: dashed; background: #fafafa; }
+  .pl-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .pl-name { font-size: 14px; font-weight: 700; }
+  .pl-pill { font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+  .pl-pill.ok { background: #d1fae5; color: #065f46; }
+  .pl-pill.no { background: #fee2e2; color: #991b1b; }
+  .pl-meta { font-size: 11px; color: #6b7280; margin-bottom: 8px; }
+  .pl-krw { background: #eef2ff; color: #3730a3; padding: 7px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .pl-bd { font-size: 10px; color: #6b7280; line-height: 1.5; margin-bottom: 8px; }
+  .pl-actions { display: flex; gap: 5px; }
+  .pl-actions .btn { flex: 1; padding: 6px; font-size: 11px; }
+  .pl-empty-msg { text-align: center; padding: 20px 0; color: #9ca3af; font-size: 12px; }
+
+  /* Shopee 합계 카드 */
+  .shopee-sum { margin: 10px 24px 0; padding: 14px 18px; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .ss-l { font-size: 11px; opacity: .85; }
+  .ss-v { font-size: 20px; font-weight: 800; margin: 2px 0; }
+  .ss-s { font-size: 10px; opacity: .75; }
+
+  /* 하단 합계 바 */
+  .total-bar { background: #1f2937; color: #fff; padding: 22px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+  .total-bar .lbl { font-size: 12px; opacity: .8; }
+  .total-bar .amount { font-size: 28px; font-weight: 800; margin: 4px 0; }
+  .total-bar .meta { font-size: 11px; opacity: .65; }
+  .total-bar .right { display: flex; gap: 8px; align-items: center; }
+  .total-bar .btn.success { padding: 12px 22px; font-size: 14px; font-weight: 700; }
+
+  /* Settings */
+  .settings-wrap { padding: 20px 24px; max-width: 1100px; }
+  .section { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  .section h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .section .desc { font-size: 12px; color: #6b7280; margin-bottom: 14px; }
+  .upload-zone { border: 1.5px dashed #c7d2fe; background: #eef2ff; border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .upload-zone:hover { background: #e0e7ff; }
+  .up-icon { width: 40px; height: 40px; background: #4f46e5; color: #fff; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
+  .up-main { flex: 1; }
+  .up-title { font-size: 13px; font-weight: 700; }
+  .up-hint { font-size: 11px; color: #6b7280; margin-top: 2px; }
+
+  .rule-box { background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 0 6px 6px 0; padding: 11px 13px; font-size: 11px; color: #78350f; margin: 12px 0; line-height: 1.6; }
+  .rule-box strong { display: block; margin-bottom: 3px; }
+
+  .cur-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-top: 10px; }
+  .cur-chip { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; }
+  .cur-chip.empty { border-style: dashed; background: #fafafa; }
+  .cur-chip.ok { border-color: #6ee7b7; background: #ecfdf5; }
+  .cur-chip-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+  .cur-code { font-weight: 700; font-size: 14px; }
+  .cur-meta { font-size: 10px; color: #6b7280; line-height: 1.4; }
+  .cur-pill { font-size: 9px; padding: 2px 7px; border-radius: 999px; font-weight: 600; }
+  .cur-pill.ok { background: #d1fae5; color: #065f46; }
+  .cur-pill.no { background: #f3f4f6; color: #6b7280; }
+  .cur-actions { display: flex; gap: 4px; margin-top: 6px; }
+  .cur-actions .btn { flex: 1; padding: 4px 8px; font-size: 10px; }
+
+  .platform-uploaders { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .pu-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; }
+  .pu-h { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .pu-desc { font-size: 11px; color: #6b7280; margin-bottom: 8px; line-height: 1.5; }
+  .pu-actions { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; z-index: 500; padding: 20px; }
+  .modal-bg.show { display: flex; }
+  .modal { background: #fff; border-radius: 12px; max-width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+  .modal.normal { width: 480px; padding: 22px 24px; }
+  .modal.large { width: 1000px; max-height: 88vh; display: flex; flex-direction: column; padding: 0; }
+  .modal-head { padding: 14px 22px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+  .modal-head h3 { font-size: 16px; font-weight: 700; }
+  .modal-body { padding: 16px 22px; overflow: auto; flex: 1; }
+  .modal-foot { padding: 12px 22px; border-top: 1px solid #e5e7eb; background: #f9fafb; display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+  .x-close { background: none; border: none; font-size: 22px; color: #6b7280; cursor: pointer; padding: 0 4px; }
+
+  table.txn { width: 100%; border-collapse: collapse; font-size: 11px; }
+  table.txn th { background: #f3f4f6; padding: 7px 8px; text-align: left; font-weight: 600; border-bottom: 1.5px solid #e5e7eb; font-size: 10px; color: #4b5563; white-space: nowrap; position: sticky; top: 0; }
+  table.txn td { padding: 6px 8px; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .acct-bd { display: inline-block; padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 600; }
+  .acct-bd.fee { background: #eef2ff; color: #3730a3; }
+  .acct-bd.ad { background: #fdf2f8; color: #9d174d; }
+  .acct-bd.ship { background: #f0f9ff; color: #075985; }
+  .acct-bd.tax { background: #fff7ed; color: #9a3412; }
+  .acct-bd.refund { background: #fef2f2; color: #991b1b; }
+  .acct-bd.etc { background: #f3f4f6; color: #4b5563; }
+  .acct-bd.rev { background: #ecfdf5; color: #065f46; }
+  .currency-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; background: #eef2ff; color: #4338ca; font-size: 10px; font-weight: 600; }
+
+  .row-del { background: none; border: none; color: #dc2626; cursor: pointer; font-size: 13px; }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #1f2937; color: #fff; padding: 11px 16px; border-radius: 8px; font-size: 12px; box-shadow: 0 10px 25px rgba(0,0,0,.15); opacity: 0; transform: translateY(8px); transition: all .2s; pointer-events: none; z-index: 1000; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.ok { background: #059669; }
+  .toast.err { background: #dc2626; }
+
+  details.help summary { cursor: pointer; font-size: 12px; color: #4f46e5; font-weight: 600; padding: 6px 0; }
+  details.help div { margin-top: 8px; padding: 12px; background: #f9fafb; border-radius: 6px; font-size: 11px; line-height: 1.7; color: #4b5563; }
+  details.help code { background: #e5e7eb; padding: 1px 5px; border-radius: 3px; font-family: monospace; font-size: 11px; }
+
+  @media (max-width: 700px) {
+    .account-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="app-header">
+    <h1>플랫폼 수수료 통합 계산기 v2</h1>
+    <div class="sub">큐텐 + Shopee 8개국 + Amazon · eBay · Rakuten · Lazada — 월별 평균환율 + 회계 계정 분리</div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="dashboard" class="active">대시보드</button>
+    <button data-tab="settings">설정</button>
+  </nav>
+
+  <!-- ============ DASHBOARD TAB ============ -->
+  <div id="tab-dashboard" class="tab-content">
+    <div class="dash-top">
+      <div>
+        <h2>통합 수수료 계산기</h2>
+        <div class="subt">플랫폼별 카드 클릭 → 거래 내역 확인 / CSV·PDF 업로드</div>
+      </div>
+      <div class="year-chips" id="year-chips"></div>
+    </div>
+
+    <div id="banner-wrap"></div>
+
+    <div class="period-row">
+      <span class="label">기간</span>
+      <input type="date" id="d-from">
+      <span style="color:#9ca3af;">~</span>
+      <input type="date" id="d-to">
+      <button class="btn btn-sm" id="d-loadsample" style="margin-left:auto;">샘플 데이터 불러오기</button>
+      <button class="btn btn-sm danger" id="d-clearall">전체 초기화</button>
+    </div>
+
+    <div class="account-panel">
+      <div class="account-h">회계 계정별 합계 (KRW, 절대값)</div>
+      <div class="account-grid" id="account-grid"></div>
+    </div>
+
+    <div id="platform-groups"></div>
+
+    <div class="total-bar">
+      <div>
+        <div class="lbl">전체 비용 합계 (KRW)</div>
+        <div class="amount" id="total-amount">₩0</div>
+        <div class="meta" id="total-meta">데이터를 입력해주세요</div>
+      </div>
+      <div class="right">
+        <button class="btn" id="btn-export" type="button" style="background:#10b981; color:#fff; border-color:#10b981;">📥 통합 엑셀 다운로드</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SETTINGS TAB ============ -->
+  <div id="tab-settings" class="tab-content" hidden>
+    <div class="settings-wrap">
+
+      <div class="section">
+        <h3>① 월별 평균환율 업로드</h3>
+        <div class="desc">외국환중개(smbs.or.kr) 매매기준율 / 재정환율을 월별로 등록합니다. 통화별로 따로 업로드 가능합니다.</div>
+        <label class="upload-zone" id="up-zone">
+          <div class="up-icon">↑</div>
+          <div class="up-main">
+            <div class="up-title">환율 엑셀(.xlsx) 또는 CSV 끌어다 놓기</div>
+            <div class="up-hint">날짜 / 통화코드 컬럼 인식. 일별 데이터 업로드 시 월평균으로 자동 변환됩니다.</div>
+          </div>
+          <input type="file" id="up-input" accept=".xlsx,.xls,.csv" style="display:none;">
+          <button class="btn primary" type="button" id="up-btn">파일 선택</button>
+        </label>
+
+        <div class="rule-box">
+          <strong>환율 단위 안내</strong>
+          · JPY: 100엔당 KRW (예: 941.39)<br>
+          · USD/SGD/MYR/THB/TWD/PHP/VND/MXN/BRL 등: 1단위당 KRW<br>
+          · 거래일이 환율 등록일에 없으면 같은 달의 평균환율을 자동 적용합니다
+        </div>
+
+        <div id="fx-by-year"></div>
+      </div>
+
+      <div class="section">
+        <h3>② 외국납부세액공제 정책</h3>
+        <div class="desc">엑셀 다운로드 시 매출세 항목에 자동 적용되는 안내문</div>
+        <div class="rule-box" style="background:#eef2ff; border-left-color:#4f46e5; color:#3730a3;">
+          <strong>외국납부세액공제 결론</strong>
+          · 본 보고서의 「매출세」 항목들은 모두 간접세 (VAT/GST/SST/LVG/Sales Tax/Import Tax 등)<br>
+          · 외국납부세액공제(법인세법 §57)는 「소득세 성격」의 외국세에만 적용 → 본 항목들은 대상 아님<br>
+          · 일반 비용(지급수수료 등)으로 손금 처리 — 다운로드 엑셀에 「세금공제검토」 시트 자동 포함
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>③ 플랫폼별 자동 파서</h3>
+        <div class="desc">각 플랫폼 정산서 양식에 맞춘 PDF/Excel 자동 추출</div>
+        <div class="platform-uploaders">
+          <div class="pu-card">
+            <div class="pu-h">큐텐 (Qoo10)</div>
+            <div class="pu-desc">Q캐쉬·서비스수수료·스마트세일즈 영수증 PDF (월별 합본 xlsx)<br>+ 송금수수료 엑셀</div>
+            <div class="pu-actions">
+              <button class="btn btn-sm primary" onclick="alert('큐텐 PDF는 OCR된 합본 xlsx 형식으로 업로드하세요. 미리 만들어드린 큐텐_2025_업로드용.csv를 사용하시면 됩니다.')">사용법</button>
+            </div>
+          </div>
+          <div class="pu-card">
+            <div class="pu-h">Shopee 8개국</div>
+            <div class="pu-desc">Income Statement PDF (주별 정산, 1년 = 13~53페이지)<br>국가별 카드 → CSV 업로드</div>
+            <div class="pu-actions">
+              <button class="btn btn-sm primary" onclick="alert('미리 만들어드린 쇼피_2025_업로드용.csv를 Shopee 카드(국가별)에 업로드하세요.')">사용법</button>
+            </div>
+          </div>
+          <div class="pu-card">
+            <div class="pu-h">Amazon</div>
+            <div class="pu-desc">Date Range Report PDF (분기/월별)<br>자료 받으면 자동 파서 추가 예정</div>
+            <div class="pu-actions"><button class="btn btn-sm" disabled>대기</button></div>
+          </div>
+          <div class="pu-card">
+            <div class="pu-h">eBay / Rakuten / Lazada</div>
+            <div class="pu-desc">자료 미접수 — 양식 받으면 카드 활성화</div>
+            <div class="pu-actions"><button class="btn btn-sm" disabled>대기</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>④ 저장된 데이터</h3>
+        <div class="desc">브라우저 로컬 저장소에 영구 보관됩니다.</div>
+        <div id="storage-info" style="font-size:12px; line-height:1.8;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 거래 추가 모달 -->
+<div class="modal-bg" id="mod-add">
+  <div class="modal normal">
+    <h3 id="mod-add-title">＋ 항목 추가</h3>
+    <div style="margin-bottom: 10px;">
+      <label style="display:block; font-size:11px; color:#6b7280; font-weight:600; margin-bottom:3px;">거래일</label>
+      <input type="date" id="mod-date" style="width:100%;">
+    </div>
+    <div style="margin-bottom: 10px;">
+      <label style="display:block; font-size:11px; color:#6b7280; font-weight:600; margin-bottom:3px;">계정</label>
+      <select id="mod-account" style="width:100%;">
+        <option value="지급수수료">지급수수료</option>
+        <option value="광고선전비">광고선전비</option>
+        <option value="물류비">물류비</option>
+        <option value="매출세">매출세</option>
+        <option value="환불">환불</option>
+        <option value="기타">기타</option>
+        <option value="매출참고">매출 (참고)</option>
+      </select>
+    </div>
+    <div style="margin-bottom: 10px;">
+      <label style="display:block; font-size:11px; color:#6b7280; font-weight:600; margin-bottom:3px;">항목명</label>
+      <input type="text" id="mod-name" placeholder="예: Commission Fee, 서비스수수료..." style="width:100%;">
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 100px; gap:10px; margin-bottom: 10px;">
+      <div>
+        <label style="display:block; font-size:11px; color:#6b7280; font-weight:600; margin-bottom:3px;">금액 (절대값)</label>
+        <input type="number" id="mod-amt" step="0.01" placeholder="0.00" style="width:100%;">
+      </div>
+      <div>
+        <label style="display:block; font-size:11px; color:#6b7280; font-weight:600; margin-bottom:3px;">통화</label>
+        <select id="mod-cur" style="width:100%;">
+          <option>USD</option><option>JPY</option><option>SGD</option><option>MYR</option><option>THB</option>
+          <option>TWD</option><option>PHP</option><option>VND</option><option>MXN</option><option>BRL</option>
+          <option>EUR</option><option>GBP</option><option>CNY</option><option>KRW</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+      <button class="btn" type="button" onclick="closeAddModal()">취소</button>
+      <button class="btn primary" type="button" onclick="saveTxn()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 상세 편집 모달 -->
+<div class="modal-bg" id="mod-detail">
+  <div class="modal large">
+    <div class="modal-head">
+      <h3 id="detail-title">상세 편집</h3>
+      <button class="x-close" type="button" onclick="closeDetailModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+        <button class="btn btn-sm primary" type="button" id="detail-add">＋ 항목 추가</button>
+        <button class="btn btn-sm" type="button" id="detail-csv">📁 CSV 업로드</button>
+        <input type="file" id="detail-csvfile" accept=".csv,.xlsx,.xls" style="display:none;">
+        <button class="btn btn-sm danger" type="button" id="detail-clear">이 카드 데이터 초기화</button>
+      </div>
+      <div id="detail-table-wrap"></div>
+    </div>
+    <div class="modal-foot">
+      <span id="detail-summary" style="font-size:12px; color:#6b7280; margin-right:auto;"></span>
+      <button class="btn" type="button" onclick="closeDetailModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ============ 상수 ============
+const PLATFORMS = [
+  { id: 'qoo10',    name: 'Qoo10 (일본)',         currency: 'JPY', group: 'qoo10' },
+  { id: 'shopee_sg', name: 'Shopee 싱가폴',        currency: 'SGD', group: 'shopee' },
+  { id: 'shopee_my', name: 'Shopee 말레이시아',    currency: 'MYR', group: 'shopee' },
+  { id: 'shopee_ph', name: 'Shopee 필리핀',        currency: 'PHP', group: 'shopee' },
+  { id: 'shopee_tw', name: 'Shopee 대만',          currency: 'TWD', group: 'shopee' },
+  { id: 'shopee_vn', name: 'Shopee 베트남',        currency: 'VND', group: 'shopee' },
+  { id: 'shopee_th', name: 'Shopee 태국',          currency: 'THB', group: 'shopee' },
+  { id: 'shopee_br', name: 'Shopee 브라질',        currency: 'BRL', group: 'shopee' },
+  { id: 'shopee_mx', name: 'Shopee 멕시코',        currency: 'MXN', group: 'shopee' },
+  { id: 'amazon',    name: 'Amazon',              currency: 'USD', group: 'amazon', placeholder: true },
+  { id: 'ebay',      name: 'eBay',                currency: 'USD', group: 'other', placeholder: true },
+  { id: 'rakuten',   name: 'Rakuten',             currency: 'JPY', group: 'other', placeholder: true },
+  { id: 'lazada',    name: 'Lazada',              currency: 'THB', group: 'other', placeholder: true },
+];
+
+const CURRENCY_INFO = {
+  USD: { country: '미국' }, JPY: { country: '일본' }, SGD: { country: '싱가포르' },
+  MYR: { country: '말레이시아' }, THB: { country: '태국' }, EUR: { country: '유럽연합' },
+  GBP: { country: '영국' }, CNY: { country: '중국' }, HKD: { country: '홍콩' },
+  TWD: { country: '대만' }, VND: { country: '베트남' }, PHP: { country: '필리핀' },
+  IDR: { country: '인도네시아' }, AUD: { country: '호주' }, MXN: { country: '멕시코' },
+  BRL: { country: '브라질' }, KRW: { country: '한국' }
+};
+const COMMON_CURRENCIES = ['USD','JPY','SGD','MYR','THB','TWD','PHP','VND','MXN','BRL','EUR','GBP','CNY'];
+const RATE_UNIT = { JPY: 100 };
+
+const ACCOUNTS = ['지급수수료','광고선전비','물류비','매출세','환불','기타'];
+const ACCOUNT_CSS = { 지급수수료:'fee', 광고선전비:'ad', 물류비:'ship', 매출세:'tax', 환불:'refund', 기타:'etc', 매출참고:'rev' };
+
+const STORAGE_KEY = 'feeCalcData_v2';
+
+let state = {
+  fxData: {},
+  platformData: {},
+  selectedYear: '2025',
+  detailPlatformId: null,
+  period: { from: '', to: '' }
+};
+
+// ============ STORAGE ============
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      state.fxData = data.fxData || {};
+      state.platformData = data.platformData || {};
+    }
+  } catch (e) { console.error(e); }
+}
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      fxData: state.fxData, platformData: state.platformData
+    }));
+  } catch (e) { toast('저장 실패: ' + e.message, 'err'); }
+}
+
+// ============ TOAST ============
+let toastTimer = null;
+function toast(msg, kind) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + (kind || '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = 'toast', 2500);
+}
+
+// ============ UTIL ============
+function formatNum(n, d) {
+  if (n == null || isNaN(n)) return '-';
+  d = d || 0;
+  return Number(n).toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function formatCompact(n, currency) {
+  if (n == null || isNaN(n)) return '-';
+  const sym = { USD:'$', JPY:'¥', SGD:'S$', MYR:'RM', THB:'฿', EUR:'€', GBP:'£', CNY:'¥', KRW:'₩', TWD:'NT$', PHP:'₱', VND:'₫', MXN:'$', BRL:'R$' }[currency] || '';
+  if (Math.abs(n) >= 1e6) return sym + (n/1e6).toFixed(1) + 'M';
+  if (Math.abs(n) >= 1e3) return sym + Math.round(n/1e3) + 'K';
+  return sym + formatNum(n, 0);
+}
+function parseDate(v) {
+  if (!v) return null;
+  if (v instanceof Date) return v.toISOString().substring(0, 10);
+  const s = String(v).trim();
+  let m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/);
+  if (m) return m[1] + '-' + m[2].padStart(2,'0') + '-' + m[3].padStart(2,'0');
+  if (/^\d+(\.\d+)?$/.test(s)) {
+    const n = parseFloat(s);
+    if (n > 25569 && n < 100000) {
+      const ms = (n - 25569) * 86400 * 1000;
+      return new Date(ms).toISOString().substring(0, 10);
+    }
+  }
+  const d = new Date(s);
+  if (!isNaN(d)) return d.toISOString().substring(0, 10);
+  return null;
+}
+function parseCsv(text) {
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (!lines.length) return [];
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  return lines.slice(1).map(line => {
+    const cells = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+    const row = {};
+    headers.forEach((h, i) => row[h] = cells[i] || '');
+    return row;
+  });
+}
+
+// ============ FX (월별 평균환율) ============
+function getMonthlyRate(currency, dateStr) {
+  if (currency === 'KRW') return { rate: 1, monthKey: dateStr.substring(0,7), unit: 1 };
+  const month = dateStr.substring(0, 7);
+  const year = dateStr.substring(0, 4);
+  const yd = state.fxData[year];
+  if (!yd || !yd.rates || !yd.rates[currency]) return null;
+  const rate = yd.rates[currency][month];
+  if (rate == null) return null;
+  return { rate, monthKey: month, unit: RATE_UNIT[currency] || 1 };
+}
+function toKRW(amount, currency, dateStr) {
+  if (currency === 'KRW') return Math.round(Math.abs(amount));
+  const r = getMonthlyRate(currency, dateStr);
+  if (!r) return null;
+  return Math.round(Math.abs(amount) * r.rate / r.unit);
+}
+
+// ============ FX FILE UPLOAD (월별 자동 변환) ============
+// 외국환중개(smbs.or.kr) 등에서 받은 HTML로 위장된 .xls 파일 파서
+function parseHtmlFxRows(buf) {
+  // charset 감지: smbs.or.kr 파일은 보통 euc-kr
+  let text;
+  try {
+    const head = new TextDecoder('utf-8', { fatal: false }).decode(buf.slice(0, 1024));
+    if (/charset\s*=\s*euc-kr/i.test(head)) {
+      text = new TextDecoder('euc-kr').decode(buf);
+    } else {
+      text = new TextDecoder('utf-8').decode(buf);
+    }
+  } catch (e) {
+    try { text = new TextDecoder('euc-kr').decode(buf); }
+    catch (e2) { text = new TextDecoder().decode(buf); }
+  }
+
+  if (!/<table/i.test(text)) return [];
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'text/html');
+  const tables = doc.querySelectorAll('table');
+
+  const out = [];
+  for (const table of tables) {
+    const trs = [...table.querySelectorAll('tr')];
+    if (trs.length < 2) continue;
+
+    let headerIdx = -1;
+    let headers = [];
+    for (let i = 0; i < Math.min(trs.length, 5); i++) {
+      const cells = [...trs[i].querySelectorAll('td, th')].map(td => td.textContent.trim());
+      if (cells.some(c => /^(날짜|일자|기준일|Date|DATE)$/i.test(c))) {
+        headerIdx = i;
+        headers = cells;
+        break;
+      }
+    }
+    if (headerIdx === -1) continue;
+
+    for (let i = headerIdx + 1; i < trs.length; i++) {
+      const cells = [...trs[i].querySelectorAll('td, th')].map(td => td.textContent.trim());
+      if (cells.length < 3) continue;
+      const obj = {};
+      headers.forEach((h, idx) => { if (h) obj[h] = cells[idx] != null ? cells[idx] : ''; });
+      out.push(obj);
+    }
+  }
+  return out;
+}
+
+function handleFxFile(file, replaceCurrency) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      let rows;
+      const buf = e.target.result;
+      const fname = file.name.toLowerCase();
+
+      if (fname.endsWith('.csv')) {
+        rows = parseCsv(new TextDecoder('utf-8').decode(buf));
+      } else {
+        let isHtml = false;
+        try {
+          const head = new TextDecoder('utf-8', { fatal: false }).decode(buf.slice(0, 512)).toLowerCase();
+          if (head.includes('<html') || head.includes('<table') || head.includes('<meta') || head.includes('<!doctype html')) {
+            isHtml = true;
+          }
+        } catch (_) {}
+
+        if (isHtml) {
+          rows = parseHtmlFxRows(buf);
+        } else {
+          try {
+            const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+            rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { raw: false, defval: '' });
+          } catch (xlsxErr) {
+            rows = parseHtmlFxRows(buf);
+          }
+        }
+      }
+      if (!rows || !rows.length) { toast('파일이 비어있거나 형식을 인식하지 못했습니다', 'err'); return; }
+
+      const dateKeys = ['날짜','Date','date','일자','DATE','기준일'];
+      const detected = new Set();
+      const dailyByCurrency = {};
+      let detectedYear = null;
+
+      const sampleKeys = Object.keys(rows[0] || {});
+      const hasCurrencyNameCol = sampleKeys.some(k => /통화명|통화\s*코드|currency/i.test(String(k)));
+      const hasRateCol = sampleKeys.some(k => /^환율$|^rate$|매매기준율/i.test(String(k).trim()));
+      const isLongFormat = hasCurrencyNameCol && hasRateCol;
+
+      if (isLongFormat) {
+        for (const row of rows) {
+          let date = null, curName = '', rateStr = '';
+          for (const k of Object.keys(row)) {
+            const kt = String(k).trim();
+            if (dateKeys.some(dk => kt.toLowerCase() === dk.toLowerCase())) {
+              date = parseDate(row[k]);
+            } else if (/통화명|통화\s*코드|currency/i.test(kt)) {
+              curName = String(row[k] || '');
+            } else if (/^환율$|^rate$|매매기준율/i.test(kt)) {
+              rateStr = String(row[k] || '');
+            }
+          }
+          if (!date) continue;
+
+          let cur = '';
+          const m = curName.match(/\(([A-Z]{3})\)/);
+          if (m) cur = m[1];
+          else {
+            const up = curName.toUpperCase().replace(/[^A-Z]/g, '');
+            if (COMMON_CURRENCIES.includes(up)) cur = up;
+          }
+          if (!cur || !COMMON_CURRENCIES.includes(cur)) continue;
+
+          const v = parseFloat(rateStr.replace(/,/g, ''));
+          if (isNaN(v) || v <= 0) continue;
+
+          if (!detectedYear) detectedYear = date.substring(0,4);
+          const month = date.substring(0,7);
+          detected.add(cur);
+          if (!dailyByCurrency[cur]) dailyByCurrency[cur] = {};
+          if (!dailyByCurrency[cur][month]) dailyByCurrency[cur][month] = [];
+          dailyByCurrency[cur][month].push(v);
+        }
+      } else {
+        for (const row of rows) {
+          let date = null;
+          const curValues = {};
+          for (const k of Object.keys(row)) {
+            const kt = String(k).trim();
+            if (dateKeys.some(dk => kt.toLowerCase() === dk.toLowerCase())) {
+              date = parseDate(row[k]);
+            } else {
+              const cur = kt.toUpperCase().replace(/[^A-Z]/g, '');
+              if (COMMON_CURRENCIES.includes(cur)) {
+                const v = parseFloat(String(row[k]).replace(/,/g, ''));
+                if (!isNaN(v) && v > 0) curValues[cur] = v;
+              }
+            }
+          }
+          if (!date) continue;
+          if (!detectedYear) detectedYear = date.substring(0,4);
+          const month = date.substring(0,7);
+          for (const cur of Object.keys(curValues)) {
+            detected.add(cur);
+            if (!dailyByCurrency[cur]) dailyByCurrency[cur] = {};
+            if (!dailyByCurrency[cur][month]) dailyByCurrency[cur][month] = [];
+            dailyByCurrency[cur][month].push(curValues[cur]);
+          }
+        }
+      }
+
+      let curList = [...detected];
+      if (replaceCurrency) {
+        if (!detected.has(replaceCurrency)) { toast(replaceCurrency + ' 컬럼을 못 찾았습니다', 'err'); return; }
+        curList = [replaceCurrency];
+      }
+      if (!curList.length) { toast('인식된 통화가 없습니다', 'err'); return; }
+
+      const year = detectedYear || prompt('환율 연도', String(new Date().getFullYear()));
+      if (!year) return;
+
+      // 월평균 계산
+      if (!state.fxData[year]) state.fxData[year] = { rates: {}, sources: {} };
+      if (!state.fxData[year].rates) state.fxData[year].rates = {};
+      if (!state.fxData[year].sources) state.fxData[year].sources = {};
+
+      const today = new Date().toISOString().substring(0,10);
+      for (const cur of curList) {
+        if (!state.fxData[year].rates[cur]) state.fxData[year].rates[cur] = {};
+        const monthCount = Object.keys(dailyByCurrency[cur]).length;
+        let totalDays = 0;
+        for (const month of Object.keys(dailyByCurrency[cur])) {
+          const arr = dailyByCurrency[cur][month];
+          totalDays += arr.length;
+          const avg = arr.reduce((s,v) => s+v, 0) / arr.length;
+          state.fxData[year].rates[cur][month] = +avg.toFixed(4);
+        }
+        state.fxData[year].sources[cur] = { filename: file.name, uploaded: today, dailyCount: totalDays, monthCount };
+      }
+      saveState();
+      toast(year + '년 ' + curList.join(',') + ' (' + curList.map(c => CURRENCY_INFO[c]?.country).filter(Boolean).join('/') + ') 환율 등록 완료', 'ok');
+      renderSettings();
+      renderYearChips();
+      renderDashboard();
+    } catch (err) {
+      console.error(err);
+      toast('읽기 실패: ' + err.message, 'err');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function deleteCurrencyFromYear(year, currency) {
+  if (!confirm(year + '년 ' + currency + ' 환율 삭제?')) return;
+  const yd = state.fxData[year];
+  if (!yd) return;
+  if (yd.rates && yd.rates[currency]) delete yd.rates[currency];
+  if (yd.sources && yd.sources[currency]) delete yd.sources[currency];
+  if (!yd.sources || Object.keys(yd.sources).length === 0) delete state.fxData[year];
+  saveState();
+  renderSettings();
+  renderYearChips();
+  renderDashboard();
+  toast(currency + ' 삭제됨', 'ok');
+}
+</script>
+
+<script>
+// ============ 탭 전환 ============
+document.querySelectorAll('nav.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.hidden = true);
+    document.getElementById('tab-' + btn.dataset.tab).hidden = false;
+    if (btn.dataset.tab === 'settings') renderSettings();
+    if (btn.dataset.tab === 'dashboard') renderDashboard();
+  });
+});
+
+// ============ 합계 계산 ============
+function filterByPeriod(date) {
+  if (state.period.from && date < state.period.from) return false;
+  if (state.period.to && date > state.period.to) return false;
+  return true;
+}
+
+function calcPlatformTotals(platformId) {
+  const txns = (state.platformData[state.selectedYear]?.[platformId] || []).filter(t => filterByPeriod(t.date));
+  const sum = { 지급수수료:0, 광고선전비:0, 물류비:0, 매출세:0, 환불:0, 기타:0, 매출참고:0, count: txns.length, lastUpdated: null, currencies: new Set() };
+  for (const t of txns) {
+    const krw = toKRW(t.amount, t.currency, t.date);
+    if (krw == null) continue;
+    sum[t.account] = (sum[t.account] || 0) + krw;
+    sum.currencies.add(t.currency);
+    if (!sum.lastUpdated || t.date > sum.lastUpdated) sum.lastUpdated = t.date;
+  }
+  sum.totalCost = ACCOUNTS.reduce((s,a) => s + (sum[a] || 0), 0);
+  return sum;
+}
+
+function calcAllAccountTotals() {
+  const all = { 지급수수료:0, 광고선전비:0, 물류비:0, 매출세:0, 환불:0, 기타:0, 매출참고:0, count:0 };
+  for (const p of PLATFORMS) {
+    if (p.placeholder) continue;
+    const t = calcPlatformTotals(p.id);
+    ACCOUNTS.forEach(a => all[a] += t[a] || 0);
+    all.매출참고 += t.매출참고 || 0;
+    all.count += t.count;
+  }
+  all.total = ACCOUNTS.reduce((s,a) => s + all[a], 0);
+  return all;
+}
+
+// ============ 렌더링 ============
+function renderYearChips() {
+  const wrap = document.getElementById('year-chips');
+  const years = new Set(Object.keys(state.fxData));
+  const cy = new Date().getFullYear();
+  for (let y = cy + 1; y >= cy - 3; y--) years.add(String(y));
+  const sorted = [...years].sort();
+  if (!sorted.includes(state.selectedYear)) state.selectedYear = sorted[sorted.length - 1];
+  wrap.innerHTML = sorted.map(y =>
+    '<button class="year-chip ' + (y === state.selectedYear ? 'active' : '') + '" data-y="' + y + '">' + y + '</button>'
+  ).join('');
+  wrap.querySelectorAll('.year-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      state.selectedYear = c.dataset.y;
+      state.period.from = state.selectedYear + '-01-01';
+      state.period.to = state.selectedYear + '-12-31';
+      document.getElementById('d-from').value = state.period.from;
+      document.getElementById('d-to').value = state.period.to;
+      renderYearChips();
+      renderDashboard();
+    });
+  });
+}
+
+function renderBanner() {
+  const wrap = document.getElementById('banner-wrap');
+  const fx = state.fxData[state.selectedYear];
+  const yd = state.platformData[state.selectedYear] || {};
+  const used = PLATFORMS.filter(p => !p.placeholder && (yd[p.id] || []).length > 0);
+  let totalTxns = 0;
+  used.forEach(p => totalTxns += (yd[p.id] || []).length);
+  if (fx && fx.sources && Object.keys(fx.sources).length) {
+    const cs = Object.keys(fx.sources);
+    wrap.innerHTML = '<div class="saved-banner"><strong>저장 데이터 자동 불러오기 완료</strong> — 환율 ' + cs.length + '통화 (' + cs.join(', ') + '), 거래 ' + totalTxns + '건 (' + used.length + '개 카드)</div>';
+  } else {
+    wrap.innerHTML = '<div class="saved-banner warn"><strong>' + state.selectedYear + '년 환율 미등록</strong> — 설정 탭에서 외국환중개 환율 파일 업로드해주세요. 또는 좌측 “샘플 데이터 불러오기” 클릭.</div>';
+  }
+}
+
+function renderAccountPanel() {
+  const all = calcAllAccountTotals();
+  const grid = document.getElementById('account-grid');
+  grid.innerHTML = ACCOUNTS.map(a =>
+    '<div class="account-c ' + ACCOUNT_CSS[a] + '"><div class="account-l">' + a + '</div><div class="account-v">' + formatNum(all[a], 0) + '</div></div>'
+  ).join('');
+}
+
+function buildCard(p) {
+  const t = calcPlatformTotals(p.id);
+  const has = t.count > 0;
+  if (!has && p.placeholder) {
+    return '<div class="pl-card empty">' +
+      '<div class="pl-head"><div class="pl-name">' + p.name + '</div><span class="pl-pill no">대기</span></div>' +
+      '<div class="pl-meta">자료 미접수</div>' +
+      '<div class="pl-empty-msg">자료 받으면 활성화</div>' +
+      '</div>';
+  }
+  if (!has) {
+    return '<div class="pl-card empty" data-pl="' + p.id + '">' +
+      '<div class="pl-head"><div class="pl-name">' + p.name + '</div><span class="pl-pill no">미입력</span></div>' +
+      '<div class="pl-meta">' + p.currency + ' · ' + (CURRENCY_INFO[p.currency]?.country || '-') + '</div>' +
+      '<div class="pl-empty-msg">아직 데이터가 없습니다</div>' +
+      '<div class="pl-actions">' +
+        '<button class="btn primary" type="button" data-act="edit" data-pl="' + p.id + '">＋ 데이터 입력</button>' +
+        '<button class="btn" type="button" data-act="csv" data-pl="' + p.id + '">CSV 업로드</button>' +
+      '</div></div>';
+  }
+  const breakdown = ACCOUNTS.filter(a => t[a] > 0).slice(0, 3).map(a => a + ' ' + formatCompact(t[a], 'KRW')).join(' · ');
+  return '<div class="pl-card" data-pl="' + p.id + '">' +
+    '<div class="pl-head"><div class="pl-name">' + p.name + '</div><span class="pl-pill ok">저장됨</span></div>' +
+    '<div class="pl-meta">' + p.currency + ' · ' + (CURRENCY_INFO[p.currency]?.country || '-') + ' · 거래 ' + t.count + '건</div>' +
+    '<div class="pl-krw">KRW 환산: ' + formatNum(t.totalCost, 0) + '</div>' +
+    '<div class="pl-bd">' + (breakdown || '데이터 없음') + '</div>' +
+    '<div class="pl-actions">' +
+      '<button class="btn" type="button" data-act="csv" data-pl="' + p.id + '">CSV 업로드</button>' +
+      '<button class="btn primary" type="button" data-act="edit" data-pl="' + p.id + '">상세 편집</button>' +
+    '</div></div>';
+}
+
+function renderPlatformGroups() {
+  const wrap = document.getElementById('platform-groups');
+  const yd = state.platformData[state.selectedYear] || {};
+  let html = '';
+
+  // Qoo10
+  html += '<div class="group-h">큐텐 (일본) <span class="group-h-sub">월별 영수증 PDF + 송금엑셀</span></div>';
+  html += '<div class="card-grid">';
+  html += buildCard(PLATFORMS.find(p => p.id === 'qoo10'));
+  html += '</div>';
+
+  // Shopee 8개국
+  const shopeePlatforms = PLATFORMS.filter(p => p.group === 'shopee');
+  let shopeeTotal = { 지급수수료:0, 광고선전비:0, 물류비:0, 매출세:0, 환불:0, 기타:0, 매출참고:0, count:0 };
+  shopeePlatforms.forEach(p => {
+    const t = calcPlatformTotals(p.id);
+    Object.keys(shopeeTotal).forEach(k => shopeeTotal[k] += t[k] || 0);
+    shopeeTotal.count += t.count;
+  });
+  const shopeeAllTotal = ACCOUNTS.reduce((s,a) => s + shopeeTotal[a], 0);
+  html += '<div class="group-h">Shopee 8개국 <span class="group-h-sub">주별 정산서 PDF · 통화 8종</span></div>';
+  html += '<div class="card-grid">';
+  shopeePlatforms.forEach(p => html += buildCard(p));
+  html += '</div>';
+  if (shopeeAllTotal > 0) {
+    html += '<div class="shopee-sum">' +
+      '<div><div class="ss-l">Shopee 8개국 합계</div>' +
+      '<div class="ss-v">₩ ' + formatNum(shopeeAllTotal, 0) + '</div>' +
+      '<div class="ss-s">거래 ' + shopeeTotal.count + '건 · 매출(참고) ₩ ' + formatNum(shopeeTotal.매출참고, 0) + '</div></div>' +
+      '<div style="text-align:right; font-size:11px; opacity:0.85;">지급수수료 ' + formatNum(shopeeTotal.지급수수료, 0) + '<br>광고선전비 ' + formatNum(shopeeTotal.광고선전비, 0) + '<br>물류비 ' + formatNum(shopeeTotal.물류비, 0) + '<br>매출세 ' + formatNum(shopeeTotal.매출세, 0) + '</div></div>';
+  }
+
+  // Amazon (placeholder/data)
+  html += '<div class="group-h">Amazon <span class="group-h-sub">분기 정산서 PDF · 자료 대기 중</span></div>';
+  html += '<div class="card-grid">';
+  html += buildCard(PLATFORMS.find(p => p.id === 'amazon'));
+  html += '</div>';
+
+  // 기타 (eBay/Rakuten/Lazada)
+  html += '<div class="group-h">기타 <span class="group-h-sub">자료 미접수</span></div>';
+  html += '<div class="card-grid">';
+  PLATFORMS.filter(p => p.group === 'other').forEach(p => html += buildCard(p));
+  html += '</div>';
+
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('button[data-act]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const pl = btn.dataset.pl;
+      const act = btn.dataset.act;
+      if (act === 'edit') openDetailModal(pl);
+      else if (act === 'csv') triggerCsvUpload(pl);
+    });
+  });
+}
+
+function renderTotalBar() {
+  const all = calcAllAccountTotals();
+  document.getElementById('total-amount').textContent = '₩ ' + formatNum(all.total, 0);
+  const fx = state.fxData[state.selectedYear];
+  document.getElementById('total-meta').textContent = fx
+    ? state.selectedYear + '년 월별 평균환율 적용 · ' + all.count + '건 거래 · 매출(참고) ₩' + formatNum(all.매출참고, 0)
+    : '환율 미등록';
+  document.getElementById('btn-export').disabled = all.total === 0;
+}
+
+function renderDashboard() {
+  document.getElementById('d-from').value = state.period.from;
+  document.getElementById('d-to').value = state.period.to;
+  renderBanner();
+  renderAccountPanel();
+  renderPlatformGroups();
+  renderTotalBar();
+}
+
+// ============ Settings 렌더링 ============
+function renderSettings() {
+  const wrap = document.getElementById('fx-by-year');
+  const cy = new Date().getFullYear();
+  const yearsToShow = new Set(Object.keys(state.fxData));
+  for (let y = cy + 1; y >= cy - 3; y--) yearsToShow.add(String(y));
+  const sortedYears = [...yearsToShow].sort().reverse();
+  let html = '';
+  for (const y of sortedYears) {
+    const yd = state.fxData[y];
+    const sources = (yd && yd.sources) || {};
+    const cur = Object.keys(sources);
+    const head = cur.length ? '<span class="cur-pill ok">' + cur.length + '통화 등록</span>' : '<span class="cur-pill no">미등록</span>';
+    html += '<div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px 14px; margin-top:10px;">';
+    html += '<div style="display:flex; justify-content:space-between; align-items:center;"><div><strong>' + y + '년</strong> ' + head + '</div>';
+    html += '<button class="btn btn-sm primary" type="button" onclick="uploadForYear(\'' + y + '\')">＋ 환율 추가 업로드</button></div>';
+    const allCurs = [...new Set([...COMMON_CURRENCIES, ...cur])];
+    html += '<div class="cur-grid">';
+    for (const c of allCurs) {
+      const country = (CURRENCY_INFO[c] && CURRENCY_INFO[c].country) || '-';
+      const src = sources[c];
+      if (src) {
+        const monthCount = Object.keys((yd.rates && yd.rates[c]) || {}).length;
+        html += '<div class="cur-chip ok">' +
+          '<div class="cur-chip-h"><span class="cur-code">' + c + '</span> · ' + country + '<span class="cur-pill ok">등록</span></div>' +
+          '<div class="cur-meta">' + monthCount + '개월 평균환율<br>' + src.uploaded + ' / ' + src.filename.substring(0,18) + '</div>' +
+          '<div class="cur-actions">' +
+            '<button class="btn" type="button" onclick="replaceCurrency(\'' + y + '\',\'' + c + '\')">교체</button>' +
+            '<button class="btn danger" type="button" onclick="deleteCurrencyFromYear(\'' + y + '\',\'' + c + '\')">삭제</button>' +
+          '</div></div>';
+      } else {
+        html += '<div class="cur-chip empty">' +
+          '<div class="cur-chip-h"><span class="cur-code">' + c + '</span> · ' + country + '<span class="cur-pill no">미등록</span></div>' +
+          '<div class="cur-meta" style="opacity:0.6;">미업로드</div>' +
+          '<div class="cur-actions"><button class="btn primary" type="button" onclick="uploadForCurrency(\'' + y + '\',\'' + c + '\')">업로드</button></div>' +
+          '</div>';
+      }
+    }
+    html += '</div></div>';
+  }
+  wrap.innerHTML = html;
+
+  let totalTxns = 0;
+  Object.values(state.platformData).forEach(yObj => Object.values(yObj || {}).forEach(arr => totalTxns += arr.length));
+  let totalCurs = 0;
+  Object.values(state.fxData).forEach(yd => totalCurs += Object.keys(yd.sources || {}).length);
+  document.getElementById('storage-info').innerHTML =
+    '· 등록 환율 연도: <strong>' + Object.keys(state.fxData).length + '개</strong><br>' +
+    '· 등록 통화: <strong>' + totalCurs + '개</strong><br>' +
+    '· 거래 건수: <strong>' + totalTxns + '건</strong><br>' +
+    '· 저장: 브라우저 localStorage';
+}
+function uploadForYear(year) {
+  const inp = document.getElementById('up-input');
+  inp.dataset.replaceYear = year;
+  delete inp.dataset.replaceCurrency;
+  inp.click();
+}
+function uploadForCurrency(year, currency) {
+  const inp = document.getElementById('up-input');
+  inp.dataset.replaceYear = year;
+  inp.dataset.replaceCurrency = currency;
+  inp.click();
+}
+function replaceCurrency(year, currency) {
+  if (confirm(year + '년 ' + currency + ' 환율 교체?')) uploadForCurrency(year, currency);
+}
+</script>
+
+<script>
+// ============ Detail Modal ============
+function openDetailModal(platformId) {
+  state.detailPlatformId = platformId;
+  const p = PLATFORMS.find(p => p.id === platformId);
+  document.getElementById('detail-title').textContent = p.name + ' — 거래 내역';
+  renderDetailTable();
+  document.getElementById('mod-detail').classList.add('show');
+}
+function closeDetailModal() {
+  document.getElementById('mod-detail').classList.remove('show');
+  state.detailPlatformId = null;
+}
+function renderDetailTable() {
+  const platformId = state.detailPlatformId;
+  if (!platformId) return;
+  const wrap = document.getElementById('detail-table-wrap');
+  const summary = document.getElementById('detail-summary');
+  const txns = (state.platformData[state.selectedYear]?.[platformId] || []).filter(t => filterByPeriod(t.date)).sort((a,b) => a.date.localeCompare(b.date));
+  if (!txns.length) {
+    wrap.innerHTML = '<div style="text-align:center; padding:40px 20px; color:#9ca3af; font-size:13px; background:#fafafa; border:1px dashed #e5e7eb; border-radius:8px;">아직 데이터가 없습니다.<br>＋ 항목 추가 또는 CSV 업로드</div>';
+    summary.textContent = '';
+    return;
+  }
+  let totalKrw = 0;
+  let html = '<table class="txn"><thead><tr><th>거래일</th><th>계정</th><th>항목</th><th class="num">외화 (절대값)</th><th>통화</th><th>월</th><th class="num">월평균환율</th><th class="num">단위</th><th class="num">KRW 환산</th><th></th></tr></thead><tbody>';
+  for (const t of txns) {
+    const r = getMonthlyRate(t.currency, t.date);
+    const krw = toKRW(t.amount, t.currency, t.date);
+    if (krw != null && t.account !== '매출참고') totalKrw += krw;
+    html += '<tr>' +
+      '<td>' + t.date + '</td>' +
+      '<td><span class="acct-bd ' + (ACCOUNT_CSS[t.account] || 'etc') + '">' + t.account + '</span></td>' +
+      '<td>' + (t.name || '-') + '</td>' +
+      '<td class="num">' + formatNum(Math.abs(t.amount), 2) + '</td>' +
+      '<td><span class="currency-badge">' + t.currency + '</span></td>' +
+      '<td>' + t.date.substring(0,7) + '</td>' +
+      '<td class="num">' + (r ? formatNum(r.rate, 2) : '<span style="color:#dc2626;">미등록</span>') + '</td>' +
+      '<td class="num">' + (r ? r.unit : '-') + '</td>' +
+      '<td class="num"><strong>' + (krw != null ? formatNum(krw, 0) : '-') + '</strong></td>' +
+      '<td><button class="row-del" type="button" onclick="deleteTxn(\'' + t.id + '\')">×</button></td></tr>';
+  }
+  html += '<tr style="background:#fef9c3; font-weight:700;"><td colspan="8">비용 소계 (' + txns.filter(t => t.account !== '매출참고').length + '건)</td><td class="num">' + formatNum(totalKrw, 0) + '</td><td></td></tr>';
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+  summary.textContent = txns.length + '건 · 비용 합계 ₩' + formatNum(totalKrw, 0);
+}
+
+// ============ Add Modal ============
+function openAddModal() {
+  const p = PLATFORMS.find(p => p.id === state.detailPlatformId);
+  document.getElementById('mod-add-title').textContent = '＋ ' + (p ? p.name : '') + ' 항목 추가';
+  document.getElementById('mod-date').value = state.period.from || (state.selectedYear + '-01-01');
+  document.getElementById('mod-account').value = '지급수수료';
+  document.getElementById('mod-name').value = '';
+  document.getElementById('mod-amt').value = '';
+  document.getElementById('mod-cur').value = (p ? p.currency : 'USD');
+  document.getElementById('mod-add').classList.add('show');
+}
+function closeAddModal() { document.getElementById('mod-add').classList.remove('show'); }
+function saveTxn() {
+  const date = document.getElementById('mod-date').value;
+  const account = document.getElementById('mod-account').value;
+  const name = document.getElementById('mod-name').value.trim();
+  const amount = parseFloat(document.getElementById('mod-amt').value);
+  const currency = document.getElementById('mod-cur').value;
+  if (!date || isNaN(amount)) { toast('거래일·금액 필수', 'err'); return; }
+  const platformId = state.detailPlatformId;
+  const txn = { id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), date, account, name, amount: Math.abs(amount), currency };
+  const y = date.substring(0,4);
+  if (!state.platformData[y]) state.platformData[y] = {};
+  if (!state.platformData[y][platformId]) state.platformData[y][platformId] = [];
+  state.platformData[y][platformId].push(txn);
+  saveState();
+  renderDetailTable();
+  renderDashboard();
+  closeAddModal();
+  toast('추가됨', 'ok');
+}
+function deleteTxn(id) {
+  const platformId = state.detailPlatformId;
+  const list = state.platformData[state.selectedYear]?.[platformId];
+  if (!list) return;
+  const idx = list.findIndex(t => t.id === id);
+  if (idx >= 0) {
+    list.splice(idx, 1);
+    saveState();
+    renderDetailTable();
+    renderDashboard();
+    toast('삭제됨', 'ok');
+  }
+}
+function clearPlatformData() {
+  const platformId = state.detailPlatformId;
+  if (!platformId) return;
+  if (!confirm('이 카드의 데이터를 모두 삭제할까요?')) return;
+  if (state.platformData[state.selectedYear]) delete state.platformData[state.selectedYear][platformId];
+  saveState();
+  renderDetailTable();
+  renderDashboard();
+  toast('초기화 완료', 'ok');
+}
+
+// ============ CSV Upload (per platform card) ============
+function triggerCsvUpload(platformId) {
+  state.detailPlatformId = platformId;
+  document.getElementById('detail-csvfile').click();
+}
+function handlePlatformCsv(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      let rows;
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        rows = parseCsv(new TextDecoder('utf-8').decode(e.target.result));
+      } else {
+        const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+        rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { raw: false, defval: '' });
+      }
+      if (!rows.length) { toast('데이터 없음', 'err'); return; }
+      const platformId = state.detailPlatformId;
+      const p = PLATFORMS.find(p => p.id === platformId);
+      const txns = [];
+      for (const row of rows) {
+        const keys = Object.keys(row);
+        const find = (...names) => {
+          for (const n of names) {
+            const k = keys.find(kk => String(kk).trim().toLowerCase() === n.toLowerCase());
+            if (k) return row[k];
+          }
+          return null;
+        };
+        const date = parseDate(find('date','거래일','날짜','일자','정산일'));
+        // 자동 매핑: account, category(legacy), name(item), amount, currency, country
+        let account = find('account','계정','분류') || find('category','구분');
+        if (!account) account = '지급수수료';
+        // category(legacy) → account 매핑
+        const cat = find('category','구분');
+        if (cat && !find('account','계정','분류')) {
+          if (cat === '광고비' || cat === '광고선전비') account = '광고선전비';
+          else if (cat === '수수료' || cat === '지급수수료') account = '지급수수료';
+          else if (cat === '물류수수료' || cat === '물류비') account = '물류비';
+          else if (cat === '매출세' || cat === '세금') account = '매출세';
+          else if (cat === '환불') account = '환불';
+          else account = '기타';
+        }
+        const name = find('name','항목','itemRaw','itemLabel','분류명','description') || '';
+        let amount = parseFloat(String(find('amount','금액','value') || '').replace(/,/g, ''));
+        if (isNaN(amount)) continue;
+        amount = Math.abs(amount);
+        const currency = (find('currency','통화','cur') || (p ? p.currency : 'USD')).toUpperCase();
+        // country가 있으면 해당 Shopee 국가로 라우팅
+        const country = find('country','국가','countryCode');
+        let routePlatformId = platformId;
+        if (country && p && p.group === 'shopee') {
+          const map = { '말레이시아':'shopee_my','MY':'shopee_my','멕시코':'shopee_mx','MX':'shopee_mx',
+            '베트남':'shopee_vn','VN':'shopee_vn','브라질':'shopee_br','BR':'shopee_br',
+            '싱가폴':'shopee_sg','SG':'shopee_sg','대만':'shopee_tw','TW':'shopee_tw',
+            '태국':'shopee_th','TH':'shopee_th','필리핀':'shopee_ph','PH':'shopee_ph' };
+          if (map[country]) routePlatformId = map[country];
+        }
+        if (date) {
+          txns.push({ id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), date, account, name, amount, currency, _route: routePlatformId });
+        }
+      }
+      if (!txns.length) { toast('인식된 항목 없음', 'err'); return; }
+      const y = state.selectedYear;
+      if (!state.platformData[y]) state.platformData[y] = {};
+      // 라우팅 (쇼피 통합 CSV이면 8개국으로 분리, 아니면 현재 카드로)
+      const routedCounts = {};
+      for (const t of txns) {
+        const target = t._route || platformId;
+        delete t._route;
+        if (!state.platformData[y][target]) state.platformData[y][target] = [];
+        state.platformData[y][target].push(t);
+        routedCounts[target] = (routedCounts[target] || 0) + 1;
+      }
+      saveState();
+      renderDetailTable();
+      renderDashboard();
+      const summary = Object.entries(routedCounts).map(([k, v]) => (PLATFORMS.find(pp => pp.id === k)?.name || k) + ' ' + v + '건').join(', ');
+      toast('업로드 완료: ' + summary, 'ok');
+    } catch (err) {
+      console.error(err);
+      toast('업로드 실패: ' + err.message, 'err');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ============ 샘플 데이터 ============
+function loadSampleData() {
+  if (!confirm('샘플 환율(2025년)과 큐텐+쇼피 거래 데이터를 불러오시겠습니까?\n기존 데이터는 유지됩니다. (개발/테스트용)')) return;
+
+  // 환율 샘플 (월별 평균값, 사용자 5_2 파일 + 외국환중개 추정값)
+  const sampleRates = {
+    JPY: { '2025-01':927.97,'2025-02':952.59,'2025-03':977.77,'2025-04':999.96,'2025-05':962.28,'2025-06':944.94,'2025-07':936.97,'2025-08':941.32,'2025-09':941.20,'2025-10':939.16,'2025-11':939.83,'2025-12':941.39 },
+    USD: { '2025-01':1456,'2025-02':1437,'2025-03':1465,'2025-04':1416,'2025-05':1390,'2025-06':1372,'2025-07':1382,'2025-08':1388,'2025-09':1392,'2025-10':1398,'2025-11':1410,'2025-12':1395 },
+    SGD: { '2025-01':1075,'2025-02':1062,'2025-03':1080,'2025-04':1056,'2025-05':1038,'2025-06':1025,'2025-07':1032,'2025-08':1036,'2025-09':1040,'2025-10':1043,'2025-11':1051,'2025-12':1042 },
+    MYR: { '2025-01':326.5,'2025-02':322.4,'2025-03':328.6,'2025-04':320.7,'2025-05':314.5,'2025-06':311.2,'2025-07':313.1,'2025-08':314.6,'2025-09':315.4,'2025-10':316.7,'2025-11':319.2,'2025-12':316.0 },
+    THB: { '2025-01':42.5,'2025-02':42.1,'2025-03':43.0,'2025-04':41.8,'2025-05':41.0,'2025-06':40.5,'2025-07':40.7,'2025-08':40.9,'2025-09':41.0,'2025-10':41.2,'2025-11':41.5,'2025-12':41.0 },
+    TWD: { '2025-01':44.4,'2025-02':43.8,'2025-03':44.7,'2025-04':43.5,'2025-05':42.7,'2025-06':42.2,'2025-07':42.5,'2025-08':42.7,'2025-09':42.8,'2025-10':43.0,'2025-11':43.4,'2025-12':42.9 },
+    PHP: { '2025-01':25.2,'2025-02':24.8,'2025-03':25.4,'2025-04':24.7,'2025-05':24.2,'2025-06':23.9,'2025-07':24.0,'2025-08':24.2,'2025-09':24.3,'2025-10':24.4,'2025-11':24.6,'2025-12':24.3 },
+    VND: { '2025-01':0.0578,'2025-02':0.0570,'2025-03':0.0581,'2025-04':0.0562,'2025-05':0.0552,'2025-06':0.0545,'2025-07':0.0549,'2025-08':0.0551,'2025-09':0.0553,'2025-10':0.0555,'2025-11':0.0560,'2025-12':0.0554 },
+    MXN: { '2025-01':71,'2025-02':70,'2025-03':71.5,'2025-04':69.5,'2025-05':68.2,'2025-06':67.4,'2025-07':67.8,'2025-08':68.1,'2025-09':68.3,'2025-10':68.6,'2025-11':69.2,'2025-12':68.5 },
+    BRL: { '2025-01':256,'2025-02':252,'2025-03':258,'2025-04':250,'2025-05':245,'2025-06':242,'2025-07':244,'2025-08':245,'2025-09':246,'2025-10':247,'2025-11':249,'2025-12':246 }
+  };
+  const today = new Date().toISOString().substring(0,10);
+  if (!state.fxData['2025']) state.fxData['2025'] = { rates: {}, sources: {} };
+  if (!state.fxData['2025'].rates) state.fxData['2025'].rates = {};
+  if (!state.fxData['2025'].sources) state.fxData['2025'].sources = {};
+  for (const cur of Object.keys(sampleRates)) {
+    state.fxData['2025'].rates[cur] = sampleRates[cur];
+    state.fxData['2025'].sources[cur] = { filename: 'SAMPLE_' + cur + '_2025.xlsx', uploaded: today, dailyCount: 250, monthCount: 12 };
+  }
+  state.selectedYear = '2025';
+  state.period = { from: '2025-01-01', to: '2025-12-31' };
+  saveState();
+  renderYearChips();
+  renderDashboard();
+  toast('샘플 환율 10통화 등록 완료. 큐텐/쇼피 CSV는 각 카드에 업로드하세요.', 'ok');
+}
+
+function clearAll() {
+  if (!confirm('정말 모든 데이터를 삭제할까요? 되돌릴 수 없습니다.')) return;
+  state.fxData = {};
+  state.platformData = {};
+  saveState();
+  renderYearChips();
+  renderDashboard();
+  renderSettings();
+  toast('전체 초기화', 'ok');
+}
+</script>
+
+<script>
+// ============ Excel Export ============
+function colNumToLetter(n) {
+  let s = '';
+  while (n > 0) {
+    const r = (n - 1) % 26;
+    s = String.fromCharCode(65 + r) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+}
+
+function exportExcel() {
+  const year = state.selectedYear;
+  const fx = state.fxData[year];
+  if (!fx || !fx.sources || !Object.keys(fx.sources).length) {
+    toast('환율 미등록 — 설정 탭에서 업로드하거나 샘플 데이터 불러오기 해주세요', 'err');
+    return;
+  }
+  const wb = XLSX.utils.book_new();
+
+  // ---- 요약 시트 ----
+  const cover = [];
+  cover.push(['플랫폼 수수료 통합 보고서 (' + year + '년)']);
+  cover.push(['생성일: ' + new Date().toLocaleDateString('ko-KR')]);
+  cover.push(['정산 기간: ' + (state.period.from || (year+'-01-01')) + ' ~ ' + (state.period.to || (year+'-12-31'))]);
+  cover.push([]);
+  cover.push(['[ 환율 적용 방식 ]']);
+  cover.push(['· 월별 평균환율 (외국환중개 매매기준율 기준)']);
+  cover.push(['· JPY는 100엔 단위, 그 외 통화는 1단위당 KRW']);
+  cover.push(['· 등록된 통화: ' + Object.keys(fx.sources).join(', ')]);
+  cover.push([]);
+  cover.push(['[ 외국납부세액공제 검토 결론 ]']);
+  cover.push(['· 「매출세」 계정은 모두 간접세 (VAT/GST/SST/LVG/Sales Tax/Import Tax)']);
+  cover.push(['· 외국납부세액공제(법인세법 §57)는 「소득세 성격」 외국세에만 적용 → 본 항목 대상 아님']);
+  cover.push(['· 일반 비용(지급수수료 등)으로 손금 처리, 자세한 내용은 「세금공제검토」 시트 참조']);
+  cover.push([]);
+  cover.push(['[ 플랫폼 / 카드별 합계 (KRW, 절대값) ]']);
+  cover.push(['카드','거래수','지급수수료','광고선전비','물류비','매출세','환불','기타','계']);
+
+  const platformSheets = [];
+  for (const p of PLATFORMS) {
+    if (p.placeholder) continue;
+    const t = calcPlatformTotals(p.id);
+    if (t.count === 0) continue;
+    const tot = ACCOUNTS.reduce((s,a) => s + t[a], 0);
+    cover.push([p.name, t.count, t.지급수수료, t.광고선전비, t.물류비, t.매출세, t.환불, t.기타, tot]);
+    platformSheets.push(p);
+  }
+  // 미접수 placeholder
+  PLATFORMS.filter(p => p.placeholder).forEach(p => cover.push([p.name + ' (자료 미접수)', 0, 0, 0, 0, 0, 0, 0, 0]));
+
+  const all = calcAllAccountTotals();
+  cover.push([]);
+  cover.push(['전체 합계', all.count, all.지급수수료, all.광고선전비, all.물류비, all.매출세, all.환불, all.기타, all.total]);
+  cover.push([]);
+  cover.push(['[ 매출 참고 (비용 합계에 미포함) ]']);
+  cover.push(['전체 매출 KRW', '', '', '', '', '', '', '', all.매출참고]);
+
+  const cs = XLSX.utils.aoa_to_sheet(cover);
+  cs['!cols'] = [{wch:24},{wch:8},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:16}];
+  cs['!merges'] = [{ s:{r:0,c:0}, e:{r:0,c:8} }];
+  XLSX.utils.book_append_sheet(wb, cs, '요약');
+
+  // ---- 세금공제검토 시트 ----
+  const tx = [];
+  tx.push(['해외 매출세 / 외국납부세액공제 검토']);
+  tx.push([]);
+  tx.push(['1. 결론']);
+  tx.push(['  · 「매출세」 계정 항목은 외국납부세액공제(법인세법 §57) 대상 아님']);
+  tx.push(['  · 모두 간접세(매출세·부가세 성격)이므로 일반 비용(지급수수료·세금과공과 등)으로 손금 처리']);
+  tx.push([]);
+  tx.push(['2. 근거']);
+  tx.push(['  · 외국납부세액공제는 「소득세 성격」의 외국세(법인세·소득세 상당)에만 적용']);
+  tx.push(['  · 본 매출세 항목들은 매출에 따른 간접세이므로 소득세 성격 아님']);
+  tx.push(['  · 한국 부가세 매입세액공제와도 무관 (해외 부가세이므로)']);
+  tx.push([]);
+  tx.push(['3. 「매출세」 계정 항목 (카드별 / 항목별 KRW 합계)']);
+  tx.push(['카드','항목','외화 합계','통화','KRW 환산 합계']);
+  let taxTotal = 0;
+  for (const p of platformSheets) {
+    const txns = (state.platformData[year]?.[p.id] || []).filter(t => t.account === '매출세' && filterByPeriod(t.date));
+    const grouped = {};
+    for (const t of txns) {
+      const k = t.name;
+      if (!grouped[k]) grouped[k] = { foreign: 0, krw: 0, currency: t.currency };
+      grouped[k].foreign += Math.abs(t.amount);
+      grouped[k].krw += toKRW(t.amount, t.currency, t.date) || 0;
+    }
+    for (const [name, v] of Object.entries(grouped)) {
+      tx.push([p.name, name, v.foreign, v.currency, v.krw]);
+      taxTotal += v.krw;
+    }
+  }
+  tx.push(['','','','합계', taxTotal]);
+  tx.push([]);
+  tx.push(['4. 회계처리']);
+  tx.push(['  · 본 보고서: 「매출세」 별도 계정으로 가시화']);
+  tx.push(['  · 실무: 「지급수수료」 또는 「세금과공과」 등으로 손금 산입 (회사 정책)']);
+  tx.push(['  · 사례별 검토는 담당 세무사 확인 필요']);
+  const txSh = XLSX.utils.aoa_to_sheet(tx);
+  txSh['!cols'] = [{wch:18},{wch:30},{wch:14},{wch:6},{wch:18}];
+  txSh['!merges'] = [{ s:{r:0,c:0}, e:{r:0,c:4} }];
+  XLSX.utils.book_append_sheet(wb, txSh, '세금공제검토');
+
+  // ---- 환율 마스터 시트 ----
+  const months = [];
+  for (let m = 1; m <= 12; m++) months.push(year + '-' + String(m).padStart(2,'0'));
+  const fxCurrencies = Object.keys(fx.rates || {});
+  const fxAoa = [['월별 평균환율 (' + year + '년)']];
+  fxAoa.push([]);
+  fxAoa.push(['월', ...fxCurrencies]);
+  for (const m of months) {
+    fxAoa.push([m, ...fxCurrencies.map(c => fx.rates[c]?.[m] != null ? fx.rates[c][m] : '')]);
+  }
+  fxAoa.push([]);
+  fxAoa.push(['통화','단위 안내','출처 파일','업로드일','월수']);
+  for (const c of fxCurrencies) {
+    const unit = RATE_UNIT[c] || 1;
+    const src = fx.sources[c] || {};
+    fxAoa.push([c, unit + ' ' + c + '당 KRW', src.filename || '-', src.uploaded || '-', src.monthCount || 0]);
+  }
+  const fxSh = XLSX.utils.aoa_to_sheet(fxAoa);
+  fxSh['!cols'] = [{wch:10}, ...fxCurrencies.map(() => ({wch:11}))];
+  fxSh['!merges'] = [{ s:{r:0,c:0}, e:{r:0,c:fxCurrencies.length} }];
+  XLSX.utils.book_append_sheet(wb, fxSh, '환율_월평균');
+
+  // ---- 플랫폼별 시트 ----
+  for (const p of platformSheets) {
+    const txns = (state.platformData[year]?.[p.id] || []).filter(t => filterByPeriod(t.date)).sort((a,b) => a.date.localeCompare(b.date));
+    const aoa = [
+      [p.name + ' - 거래 명세 (' + year + '년)'],
+      [],
+      ['거래일','계정','항목','외화 (절대값)','통화','월','평균환율','단위','KRW 환산','메모']
+    ];
+    let totalKrw = 0;
+    txns.forEach(t => {
+      const r = getMonthlyRate(t.currency, t.date);
+      const krw = toKRW(t.amount, t.currency, t.date) || 0;
+      if (t.account !== '매출참고') totalKrw += krw;
+      aoa.push([t.date, t.account, t.name, Math.abs(t.amount), t.currency, t.date.substring(0,7), r ? r.rate : '', r ? r.unit : '', krw, t.memo || '']);
+    });
+    aoa.push([]);
+    aoa.push(['','','','','','','','비용 합계', totalKrw, '']);
+    const sheet = XLSX.utils.aoa_to_sheet(aoa);
+    sheet['!cols'] = [{wch:11},{wch:10},{wch:25},{wch:14},{wch:6},{wch:9},{wch:11},{wch:6},{wch:14},{wch:18}];
+    sheet['!merges'] = [{ s:{r:0,c:0}, e:{r:0,c:9} }];
+    // 시트 이름은 31자 이내
+    let sheetName = p.id.replace('shopee_', 'Shopee_').replace('qoo10', 'Qoo10');
+    if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, sheet, sheetName);
+  }
+
+  const fname = '플랫폼수수료_통합보고서_' + year + '_' + new Date().toISOString().substring(0,10) + '.xlsx';
+  XLSX.writeFile(wb, fname);
+  toast('엑셀 다운로드: ' + fname, 'ok');
+}
+
+// ============ Event Wiring ============
+document.getElementById('up-input').addEventListener('change', e => {
+  const f = e.target.files[0];
+  const replaceCurrency = e.target.dataset.replaceCurrency;
+  delete e.target.dataset.replaceYear;
+  delete e.target.dataset.replaceCurrency;
+  if (f) handleFxFile(f, replaceCurrency);
+  e.target.value = '';
+});
+document.getElementById('up-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('up-input').click();
+});
+const uz = document.getElementById('up-zone');
+uz.addEventListener('click', e => {
+  if (e.target.tagName === 'BUTTON') return;
+  document.getElementById('up-input').click();
+});
+['dragenter','dragover'].forEach(ev => uz.addEventListener(ev, e => { e.preventDefault(); uz.style.background = '#ddd6fe'; }));
+['dragleave','drop'].forEach(ev => uz.addEventListener(ev, e => { e.preventDefault(); uz.style.background = ''; }));
+uz.addEventListener('drop', e => {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (f) handleFxFile(f);
+});
+
+document.getElementById('d-from').addEventListener('change', e => { state.period.from = e.target.value; renderDashboard(); });
+document.getElementById('d-to').addEventListener('change', e => { state.period.to = e.target.value; renderDashboard(); });
+document.getElementById('d-loadsample').addEventListener('click', loadSampleData);
+document.getElementById('d-clearall').addEventListener('click', clearAll);
+document.getElementById('btn-export').addEventListener('click', exportExcel);
+document.getElementById('detail-add').addEventListener('click', openAddModal);
+document.getElementById('detail-csv').addEventListener('click', () => document.getElementById('detail-csvfile').click());
+document.getElementById('detail-clear').addEventListener('click', clearPlatformData);
+document.getElementById('detail-csvfile').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) handlePlatformCsv(f);
+  e.target.value = '';
+});
+document.getElementById('mod-add').addEventListener('click', e => { if (e.target.id === 'mod-add') closeAddModal(); });
+document.getElementById('mod-detail').addEventListener('click', e => { if (e.target.id === 'mod-detail') closeDetailModal(); });
+
+// ============ INIT ============
+loadState();
+state.period.from = state.selectedYear + '-01-01';
+state.period.to = state.selectedYear + '-12-31';
+renderYearChips();
+renderDashboard();
+</script>
+
+<!-- PDF.js for client-side PDF text extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+// ============ PDF 자동 인식 + 플랫폼별 파서 ============
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+// 미접수 placeholder 해제 (자료 업로드 가능하게)
+PLATFORMS.forEach(p => {
+  if (p.id === 'amazon' || p.id === 'ebay') p.placeholder = false;
+});
+
+// PDF에서 페이지별 텍스트 추출
+async function extractPdfText(file) {
+  if (!window.pdfjsLib) { toast('PDF.js 로딩 중. 잠시 후 재시도', 'err'); return null; }
+  const ab = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+  const pages = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const tc = await page.getTextContent();
+    // y 좌표로 줄 그룹핑 (대략적)
+    const items = tc.items.sort((a, b) => {
+      const dy = b.transform[5] - a.transform[5];
+      if (Math.abs(dy) > 2) return dy;
+      return a.transform[4] - b.transform[4];
+    });
+    let out = '';
+    let lastY = null;
+    for (const it of items) {
+      const y = it.transform[5];
+      if (lastY !== null && Math.abs(lastY - y) > 2) out += '\n';
+      out += it.str + ' ';
+      lastY = y;
+    }
+    pages.push(out);
+  }
+  return pages;
+}
+
+// ============ Shopee PDF 파서 ============
+const SHOPEE_ITEM_MAP = [
+  { kw:['AMS Commission Fee', 'AMS'], account:'광고선전비', label:'AMS마케팅수수료' },
+  { kw:['Commission Fee', 'Commission fee'], account:'지급수수료', label:'판매수수료' },
+  { kw:['Service Fee', 'service fee'], account:'지급수수료', label:'서비스이용수수료' },
+  { kw:['Transaction Fee'], account:'지급수수료', label:'결제수수료' },
+  { kw:['Platform Infrastructure Fee'], account:'지급수수료', label:'플랫폼 인프라수수료' },
+  { kw:['Actual Shipping Fee'], account:'물류비', label:'실제 배송비' },
+  { kw:['Reverse Shipping Fee'], account:'물류비', label:'반품배송비' },
+  { kw:['Seller Paid Shipping'], account:'물류비', label:'셀러부담배송' },
+  { kw:['Shipping Rebate', 'Shipping Fee Rebate'], account:'물류비', label:'쇼피배송지원금' },
+  { kw:['3rd Party Logistics'], account:'물류비', label:'3PL 배송비' },
+  { kw:['Sales Tax on LVG'], account:'매출세', label:'LVG 매출세' },
+  { kw:['Product Goods', 'Product GST'], account:'매출세', label:'상품GST' },
+  { kw:['Shipping Goods', 'Shipping GST'], account:'매출세', label:'배송GST' },
+  { kw:['Value-Added Tax', 'VAT'], account:'매출세', label:'VAT' },
+  { kw:['Import Tax'], account:'매출세', label:'수입세' },
+  { kw:['Seller PIT'], account:'매출세', label:'Seller PIT' },
+  { kw:['Refund Amount'], account:'환불', label:'환불액' },
+  { kw:['Voucher Sponsored'], account:'환불', label:'셀러바우처' },
+  { kw:['Coin Cashback'], account:'환불', label:'코인캐시백' },
+  { kw:['Offline Adjustment'], account:'기타', label:'오프라인조정' },
+  { kw:['Rebate Provided by Shopee'], account:'기타', label:'쇼피 리베이트' },
+  { kw:['Products\' Price Paid by Buyer','Product Price Paid by Buyer'], account:'매출참고', label:'구매자 결제 상품가' },
+  { kw:['Shipping Fee Paid by Buyer','Buyer Paid Shipping Fee'], account:'매출참고', label:'구매자 결제 배송비' }
+];
+
+function classifyShopeeItem(name) {
+  const t = name.trim();
+  for (const m of SHOPEE_ITEM_MAP) {
+    for (const k of m.kw) {
+      if (t.toLowerCase().includes(k.toLowerCase())) return m;
+    }
+  }
+  return { account: '기타', label: name };
+}
+
+const COUNTRY_TO_PLATFORM = {
+  MYR:'shopee_my', SGD:'shopee_sg', VND:'shopee_vn', BRL:'shopee_br',
+  TWD:'shopee_tw', THB:'shopee_th', PHP:'shopee_ph', MXN:'shopee_mx'
+};
+
+function parseShopeeIncomeStatement(pages) {
+  const txns = [];
+  for (const text of pages) {
+    const lines = text.split('\n');
+    let date = null, currency = null, inItems = false;
+    for (const line of lines) {
+      const dm = line.match(/Statement for (\d{4})-(\d{1,2})-(\d{1,2})/);
+      if (dm) {
+        date = dm[1] + '-' + dm[2].padStart(2,'0') + '-' + dm[3].padStart(2,'0');
+        continue;
+      }
+      const cm = line.match(/Amount\s*\(([A-Z]{3})\)/);
+      if (cm) { currency = cm[1]; inItems = true; continue; }
+      if (line.includes('Payout Amount')) { inItems = false; continue; }
+      if (!inItems || !date || !currency) continue;
+      const m = line.match(/^\s*(.+?)\s+(-?[\d,]+\.\d{1,2})\s*$/);
+      if (!m) continue;
+      const itemName = m[1].replace(/\s+\?$/, '').trim();
+      const amount = parseFloat(m[2].replace(/,/g, ''));
+      if (isNaN(amount) || itemName.length < 3) continue;
+      const cls = classifyShopeeItem(itemName);
+      txns.push({
+        id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+        date, account: cls.account, name: cls.label || itemName,
+        amount: Math.abs(amount), currency,
+        memo: itemName,
+        _route: COUNTRY_TO_PLATFORM[currency] || null
+      });
+    }
+  }
+  return txns;
+}
+
+// ============ Amazon PDF 파서 ============
+const AMAZON_MAP = [
+  { kw:'Cost of Advertising', account:'광고선전비', label:'광고비' },
+  { kw:'Refund for Advertiser', account:'광고선전비', label:'광고비 환불' },
+  { kw:'FBA selling fees', account:'지급수수료', label:'FBA 판매수수료' },
+  { kw:'Selling fee refunds', account:'지급수수료', label:'판매수수료 환불' },
+  { kw:'FBA transaction fees', account:'지급수수료', label:'FBA 거래수수료' },
+  { kw:'FBA transaction fee refunds', account:'지급수수료', label:'FBA 거래수수료 환불' },
+  { kw:'Service fees', account:'지급수수료', label:'서비스 수수료' },
+  { kw:'Refund administration fees', account:'지급수수료', label:'환불 관리 수수료' },
+  { kw:'Adjustments', account:'지급수수료', label:'조정' },
+  { kw:'Other transaction fees', account:'지급수수료', label:'기타 거래수수료' },
+  { kw:'FBA inventory and inbound services fees', account:'물류비', label:'FBA 재고/입고 서비스' },
+  { kw:'Shipping label purchases', account:'물류비', label:'배송 라벨' },
+  { kw:'Carrier shipping label adjustments', account:'물류비', label:'운송사 조정' },
+  { kw:'Product, shipping, gift wrap taxes and regulatory fee collected', account:'매출세', label:'판매세 수취' },
+  { kw:'Product, shipping, gift wrap taxes and regulatory fee refunded', account:'매출세', label:'판매세 환불' },
+  { kw:'Amazon Obligated Tax and Regulatory Fee Withheld', account:'매출세', label:'아마존 원천징수' },
+  { kw:'FBA product sale refunds', account:'환불', label:'FBA 상품 환불' },
+  { kw:'Product sale refunds (non-FBA)', account:'환불', label:'비-FBA 상품 환불' },
+  { kw:'FBA product sales', account:'매출참고', label:'FBA 상품매출' },
+  { kw:'Product sales (non-FBA)', account:'매출참고', label:'비-FBA 상품매출' },
+  { kw:'FBA inventory credit', account:'매출참고', label:'FBA 재고크레딧' },
+  { kw:'Shipping credits', account:'매출참고', label:'배송 크레딧' },
+  { kw:'Shipping credit refunds', account:'매출참고', label:'배송 크레딧 환불' },
+  { kw:'Gift wrap credits', account:'매출참고', label:'선물포장 크레딧' },
+  { kw:'Promotional rebates', account:'매출참고', label:'프로모션 리베이트' },
+  { kw:'Promotional rebate refunds', account:'매출참고', label:'프로모션 환불' }
+];
+const AMAZON_EXCLUDE = ['Transfers to bank', 'Failed transfers', 'Disburse to', 'Charges to credit'];
+
+function parseAmazonStatement(pages) {
+  const fullText = pages.join('\n');
+  // 기간 추출
+  const periodMatch = fullText.match(/from\s+(\w+ \d{1,2},\s*\d{4}).*?through\s+(\w+ \d{1,2},\s*\d{4})/);
+  let endDate = null;
+  if (periodMatch) {
+    const d = new Date(periodMatch[2]);
+    if (!isNaN(d)) endDate = d.toISOString().substring(0,10);
+  }
+  if (!endDate) endDate = new Date().toISOString().substring(0,10);
+
+  // 통화
+  const curMatch = fullText.match(/All amounts in\s+([A-Z]{3})/);
+  const currency = curMatch ? curMatch[1] : 'USD';
+
+  const txns = [];
+  const lines = fullText.split('\n');
+  for (const line of lines) {
+    if (AMAZON_EXCLUDE.some(k => line.includes(k))) continue;
+    const m = line.match(/^(.+?)\s+(-?[\d,]+\.\d{2})\s*$/);
+    if (!m) continue;
+    const itemName = m[1].trim();
+    const amount = parseFloat(m[2].replace(/,/g, ''));
+    if (isNaN(amount) || amount === 0) continue;
+    let cls = null;
+    for (const item of AMAZON_MAP) {
+      if (itemName.includes(item.kw)) { cls = item; break; }
+    }
+    if (!cls) continue;
+    txns.push({
+      id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      date: endDate, account: cls.account, name: cls.label,
+      amount: Math.abs(amount), currency,
+      memo: itemName + (periodMatch ? ' / ' + periodMatch[1] + ' ~ ' + periodMatch[2] : ''),
+      _route: 'amazon'
+    });
+  }
+  return txns;
+}
+
+// ============ Qoo10 OCR'd xlsx 파서 ============
+function parseQooReceiptsXlsx(workbook) {
+  const records = [];
+  for (const sn of workbook.SheetNames) {
+    const aoa = XLSX.utils.sheet_to_json(workbook.Sheets[sn], { header: 1, raw: false, defval: '' });
+    let cur = null;
+    let kind = null;
+    for (let i = 0; i < aoa.length; i++) {
+      const a = String(aoa[i][0] || '').trim();
+      const b = String(aoa[i][1] || '').trim();
+      if (a.startsWith('NO. JP-')) {
+        if (cur) records.push(cur);
+        const inv = a.replace('NO. ', '');
+        if (inv.startsWith('JP-Q')) kind = { account:'광고선전비', label:'Q캐쉬 (광고선전비)' };
+        else if (inv.startsWith('JP-S')) kind = { account:'지급수수료', label:'서비스수수료' };
+        else if (inv.startsWith('JP-C')) kind = { account:'광고선전비', label:'스마트세일즈 (광고선전비)' };
+        else kind = { account:'기타', label:'큐텐 영수증' };
+        cur = { invoice: inv, kind, periodEnd: null, total: null };
+      } else if (cur) {
+        const pm = a.match(/(\d{4}\/\d{1,2}\/\d{1,2})\s*[~∼\-]\s*(\d{4}\/\d{1,2}\/\d{1,2})/);
+        if (pm) {
+          const fmt = s => { const p = s.split('/'); return p[0]+'-'+p[1].padStart(2,'0')+'-'+p[2].padStart(2,'0'); };
+          cur.periodEnd = fmt(pm[2]);
+        }
+        if (a.includes('合計')) {
+          const num = parseFloat(b.replace(/,/g, '').replace(/[^0-9.-]/g,''));
+          if (!isNaN(num)) cur.total = num;
+        }
+      }
+    }
+    if (cur) records.push(cur);
+  }
+
+  // 중복 제거 (같은 invoice 번호)
+  const unique = {};
+  for (const r of records) {
+    if (!r.periodEnd || r.total == null) continue;
+    if (!unique[r.invoice] || unique[r.invoice].total == null) unique[r.invoice] = r;
+  }
+
+  const txns = [];
+  Object.values(unique).forEach(r => {
+    txns.push({
+      id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      date: r.periodEnd,
+      account: r.kind.account,
+      name: r.kind.label + ' (' + r.periodEnd.substring(0,7) + ')',
+      amount: Math.abs(r.total),
+      currency: 'JPY',
+      memo: r.invoice,
+      _route: 'qoo10'
+    });
+  });
+  return txns;
+}
+
+// 큐텐 송금수수료 엑셀
+function parseQooTransferXlsx(workbook) {
+  const txns = [];
+  for (const sn of workbook.SheetNames) {
+    const aoa = XLSX.utils.sheet_to_json(workbook.Sheets[sn], { header: 1, raw: false, defval: '' });
+    for (let i = 1; i < aoa.length; i++) {
+      const dateStr = String(aoa[i][0] || '').trim();
+      const fee = parseFloat(String(aoa[i][3] || '').replace(/,/g,''));
+      const cur = String(aoa[i][1] || '').trim();
+      const txnId = String(aoa[i][8] || '').trim();
+      if (!dateStr || isNaN(fee) || cur !== 'KRW') continue;
+      const parts = dateStr.split('/');
+      if (parts.length !== 3) continue;
+      const date = '20' + parts[2] + '-' + parts[0].padStart(2,'0') + '-' + parts[1].padStart(2,'0');
+      txns.push({
+        id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+        date, account: '지급수수료', name: '송금수수료',
+        amount: Math.abs(fee), currency: 'KRW', memo: txnId,
+        _route: 'qoo10'
+      });
+    }
+  }
+  return txns;
+}
+</script>
+
+<script>
+// ============ 자료 업로드 dispatcher ============
+async function dispatchPlatformFile(file) {
+  const platformId = state.detailPlatformId;
+  const p = PLATFORMS.find(x => x.id === platformId);
+  if (!p) return;
+  const lower = file.name.toLowerCase();
+  let txns = [];
+  let parserUsed = '';
+
+  try {
+    if (lower.endsWith('.pdf')) {
+      const pages = await extractPdfText(file);
+      if (!pages || pages.length === 0) {
+        toast('PDF에서 텍스트 추출 실패. 큐텐처럼 이미지 PDF는 OCR된 xlsx로 업로드해주세요', 'err');
+        return;
+      }
+      // 첫 페이지 미리보기로 플랫폼 자동 감지
+      const firstPage = pages[0];
+      if (firstPage.includes('Income Statement') || firstPage.includes('kaycos.') || firstPage.includes('Payout Service')) {
+        parserUsed = 'Shopee';
+        txns = parseShopeeIncomeStatement(pages);
+      } else if (firstPage.includes('Account activity') || firstPage.includes('Amazon Marketplace') || firstPage.includes('Fulfillment by Amazon')) {
+        parserUsed = 'Amazon';
+        txns = parseAmazonStatement(pages);
+      } else {
+        // 미인식 PDF: 페이지별 텍스트가 거의 없으면 이미지 PDF
+        const totalChars = pages.reduce((s,p) => s + p.length, 0);
+        if (totalChars < 200 * pages.length) {
+          toast('이미지 PDF로 보입니다. 큐텐 영수증은 OCR된 xlsx 파일로 업로드해주세요', 'err');
+          return;
+        }
+        toast('PDF 양식을 자동 인식하지 못했습니다 (Shopee/Amazon만 지원)', 'err');
+        return;
+      }
+    } else if (lower.endsWith('.xlsx') || lower.endsWith('.xls')) {
+      const ab = await file.arrayBuffer();
+      const wb = XLSX.read(ab, { type: 'array', cellDates: true });
+      // 큐텐 영수증 형식 자동 감지 (NO. JP-Q/S/C)
+      const firstSheet = wb.Sheets[wb.SheetNames[0]];
+      const sample = XLSX.utils.sheet_to_json(firstSheet, { header: 1, raw: false, defval: '' }).slice(0, 5);
+      const sampleText = sample.map(r => (r[0]||'').toString()).join(' ');
+      if (sampleText.match(/NO\.\s*JP-[QSC]/)) {
+        parserUsed = 'Qoo10 OCR 영수증';
+        txns = parseQooReceiptsXlsx(wb);
+      } else if (sample[0] && sample[0].includes && sample[0].some(c => String(c||'').includes('발생일'))) {
+        parserUsed = 'Qoo10 송금수수료';
+        txns = parseQooTransferXlsx(wb);
+      } else {
+        // 일반 CSV-like xlsx → 기존 파서로 fallback
+        handlePlatformCsv(file);
+        return;
+      }
+    } else {
+      // CSV → 기존 파서
+      handlePlatformCsv(file);
+      return;
+    }
+
+    if (!txns.length) {
+      toast(parserUsed + ' 파서 — 인식된 항목이 없습니다', 'err');
+      return;
+    }
+
+    // 라우팅: _route 있으면 해당 카드, 없으면 현재 카드
+    const y = state.selectedYear;
+    if (!state.platformData[y]) state.platformData[y] = {};
+    const counts = {};
+    for (const t of txns) {
+      const target = t._route || platformId;
+      delete t._route;
+      if (!state.platformData[y][target]) state.platformData[y][target] = [];
+      state.platformData[y][target].push(t);
+      counts[target] = (counts[target] || 0) + 1;
+    }
+    saveState();
+    renderDetailTable();
+    renderDashboard();
+    const summary = Object.entries(counts).map(([k,v]) => (PLATFORMS.find(pp => pp.id === k)?.name || k) + ' ' + v + '건').join(', ');
+    toast(parserUsed + ' 파서 — ' + summary, 'ok');
+  } catch (err) {
+    console.error(err);
+    toast('파일 처리 실패: ' + err.message, 'err');
+  }
+}
+
+// 기존 카드 CSV 업로드를 자료 업로드로 교체
+const oldHandlePlatformCsv = handlePlatformCsv;
+window.handlePlatformCsv = function(file) {
+  const lower = file.name.toLowerCase();
+  if (lower.endsWith('.pdf') || lower.endsWith('.xlsx') || lower.endsWith('.xls')) {
+    return dispatchPlatformFile(file);
+  }
+  return oldHandlePlatformCsv(file);
+};
+
+// 카드 input의 accept 속성 확장
+document.getElementById('detail-csvfile').accept = '.pdf,.csv,.xlsx,.xls';
+
+// 카드 UI 텍스트 갱신 (CSV 업로드 → 자료 업로드)
+function refreshCardLabels() {
+  document.querySelectorAll('button[data-act="csv"]').forEach(btn => {
+    btn.textContent = '자료 업로드';
+  });
+  // 상세 모달 버튼
+  const detailCsv = document.getElementById('detail-csv');
+  if (detailCsv) detailCsv.textContent = '📁 자료 업로드 (PDF/Excel/CSV)';
+}
+
+// 렌더 후마다 라벨 새로고침
+const origRenderPlatformGroups = renderPlatformGroups;
+window.renderPlatformGroups = function() {
+  origRenderPlatformGroups();
+  refreshCardLabels();
+};
+
+// 초기 렌더링 트리거 (placeholder 변경 반영)
+setTimeout(() => {
+  renderDashboard();
+  refreshCardLabels();
+}, 100);
+
+console.log('PDF 파서 로드 완료. Shopee/Amazon PDF 업로드 가능.');
+</script>
+
+
+<script>
+// ============ 설정 탭 - 연도별 접기/펼치기 + 연도 생성하기 ============
+const UI_KEY = 'feeCalcUI_v2';
+const ui = { expandedYears: new Set(), userYears: [] };
+
+(function loadUI() {
+  try {
+    const raw = localStorage.getItem(UI_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      ui.userYears = d.userYears || [];
+    }
+  } catch {}
+})();
+
+function saveUI() {
+  localStorage.setItem(UI_KEY, JSON.stringify({ userYears: ui.userYears }));
+}
+
+function toggleYear(y) {
+  if (ui.expandedYears.has(y)) ui.expandedYears.delete(y);
+  else ui.expandedYears.add(y);
+  renderSettings();
+}
+
+function addYear() {
+  const y = prompt('생성할 연도를 입력하세요 (예: 2027)', String(new Date().getFullYear() + 1));
+  if (!y) return;
+  if (!/^\d{4}$/.test(y)) { toast('4자리 연도만 입력 가능 (예: 2027)', 'err'); return; }
+  if (!ui.userYears.includes(y)) ui.userYears.push(y);
+  ui.expandedYears.add(y);  // 새로 만들면 펼침 상태로
+  saveUI();
+  renderSettings();
+  toast(y + '년 생성됨', 'ok');
+}
+
+function removeYear(y) {
+  // 데이터 있는 연도는 삭제 불가
+  if (state.fxData[y] && Object.keys(state.fxData[y].sources || {}).length > 0) {
+    toast('등록된 환율이 있어 삭제 불가. 통화 먼저 삭제해주세요', 'err');
+    return;
+  }
+  if (!confirm(y + '년을 목록에서 제거할까요?')) return;
+  ui.userYears = ui.userYears.filter(yy => yy !== y);
+  ui.expandedYears.delete(y);
+  saveUI();
+  renderSettings();
+  toast(y + '년 제거됨', 'ok');
+}
+
+// renderSettings 재정의
+renderSettings = function() {
+  const wrap = document.getElementById('fx-by-year');
+  const cy = new Date().getFullYear();
+  // 기본 표시: 환율 등록된 연도 + 현재 연도 + 직전 2년 + 사용자가 추가한 연도
+  const yearsToShow = new Set(Object.keys(state.fxData));
+  yearsToShow.add(String(cy));
+  yearsToShow.add(String(cy - 1));
+  yearsToShow.add(String(cy - 2));
+  ui.userYears.forEach(y => yearsToShow.add(y));
+
+  const sortedYears = [...yearsToShow].sort().reverse();
+  let html = '';
+
+  // 상단: 연도 생성하기 버튼
+  html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">';
+  html += '<div style="font-size:12px; color:#6b7280;">표시 중: ' + sortedYears.length + '개 연도</div>';
+  html += '<button class="btn btn-sm primary" type="button" onclick="addYear()">＋ 연도 생성하기</button>';
+  html += '</div>';
+
+  for (const y of sortedYears) {
+    const yd = state.fxData[y];
+    const sources = (yd && yd.sources) || {};
+    const cur = Object.keys(sources);
+    const expanded = ui.expandedYears.has(y);
+    const head = cur.length
+      ? '<span class="cur-pill ok">' + cur.length + '통화 등록</span>'
+      : '<span class="cur-pill no">미등록</span>';
+    const userYear = ui.userYears.includes(y) && cur.length === 0;
+
+    html += '<div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px 14px; margin-top:10px; ' + (expanded ? 'background:#fafafa;' : '') + '">';
+    html += '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">';
+    html += '<div><strong style="font-size:15px;">' + y + '년</strong> ' + head;
+    if (cur.length) html += ' <span style="font-size:11px; color:#6b7280;">(' + cur.join(', ') + ')</span>';
+    html += '</div>';
+    html += '<div style="display:flex; gap:6px;">';
+    if (expanded) {
+      html += '<button class="btn btn-sm primary" type="button" onclick="uploadForYear(\'' + y + '\')">＋ 환율 추가 업로드</button>';
+      html += '<button class="btn btn-sm" type="button" onclick="toggleYear(\'' + y + '\')">▲ 접기</button>';
+      if (userYear) html += '<button class="btn btn-sm danger" type="button" onclick="removeYear(\'' + y + '\')">제거</button>';
+    } else {
+      html += '<button class="btn btn-sm" type="button" onclick="toggleYear(\'' + y + '\')">▼ 상세</button>';
+    }
+    html += '</div></div>';
+
+    // 펼쳤을 때만 통화 그리드
+    if (expanded) {
+      const allCurs = [...new Set([...COMMON_CURRENCIES, ...cur])];
+      html += '<div class="cur-grid" style="margin-top:12px;">';
+      for (const c of allCurs) {
+        const country = (CURRENCY_INFO[c] && CURRENCY_INFO[c].country) || '-';
+        const src = sources[c];
+        if (src) {
+          const monthCount = Object.keys((yd.rates && yd.rates[c]) || {}).length;
+          const fnameShort = (src.filename || '-').length > 20 ? src.filename.substring(0,18) + '..' : src.filename;
+          html += '<div class="cur-chip ok">' +
+            '<div class="cur-chip-h"><span class="cur-code">' + c + '</span> · ' + country + '<span class="cur-pill ok">등록</span></div>' +
+            '<div class="cur-meta">' + monthCount + '개월 평균환율<br>' + src.uploaded + '<br>' + fnameShort + '</div>' +
+            '<div class="cur-actions">' +
+              '<button class="btn" type="button" onclick="replaceCurrency(\'' + y + '\',\'' + c + '\')">교체</button>' +
+              '<button class="btn danger" type="button" onclick="deleteCurrencyFromYear(\'' + y + '\',\'' + c + '\')">삭제</button>' +
+            '</div></div>';
+        } else {
+          html += '<div class="cur-chip empty">' +
+            '<div class="cur-chip-h"><span class="cur-code">' + c + '</span> · ' + country + '<span class="cur-pill no">미등록</span></div>' +
+            '<div class="cur-meta" style="opacity:0.6;">미업로드</div>' +
+            '<div class="cur-actions"><button class="btn primary" type="button" onclick="uploadForCurrency(\'' + y + '\',\'' + c + '\')">업로드</button></div>' +
+            '</div>';
+        }
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  wrap.innerHTML = html;
+
+  // 저장 데이터 정보
+  let totalTxns = 0;
+  Object.values(state.platformData).forEach(yObj => Object.values(yObj || {}).forEach(arr => totalTxns += arr.length));
+  let totalCurs = 0;
+  Object.values(state.fxData).forEach(yd => totalCurs += Object.keys(yd.sources || {}).length);
+  document.getElementById('storage-info').innerHTML =
+    '· 등록 환율 연도: <strong>' + Object.keys(state.fxData).length + '개</strong><br>' +
+    '· 등록 통화: <strong>' + totalCurs + '개</strong><br>' +
+    '· 거래 건수: <strong>' + totalTxns + '건</strong><br>' +
+    '· 저장: 브라우저 localStorage';
+};
+
+console.log('연도 접기/펼치기 + 연도 생성하기 UI 로드 완료');
+</script>
+
+
+<script>
+// ============ 다중 파일 업로드 지원 ============
+
+// 1) 모든 파일 input에 multiple 속성 추가
+['up-input', 'detail-csvfile'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.setAttribute('multiple', 'multiple');
+});
+
+// 2) 환율 업로드 핸들러를 다중 파일 지원으로 교체
+const _upInput = document.getElementById('up-input');
+if (_upInput) {
+  // 기존 리스너 제거 위해 input 자체를 클론하고 새 리스너 부여
+  const newInput = _upInput.cloneNode(true);
+  _upInput.parentNode.replaceChild(newInput, _upInput);
+  newInput.setAttribute('multiple', 'multiple');
+  newInput.addEventListener('change', async e => {
+    const files = Array.from(e.target.files || []);
+    const replaceCurrency = e.target.dataset.replaceCurrency;
+    delete e.target.dataset.replaceYear;
+    delete e.target.dataset.replaceCurrency;
+    if (!files.length) return;
+    if (files.length === 1) {
+      handleFxFile(files[0], replaceCurrency);
+    } else {
+      toast(files.length + '개 환율 파일 처리 중...', '');
+      let okCount = 0;
+      for (const f of files) {
+        try {
+          await new Promise((resolve) => {
+            const _origToast = window.toast;
+            // toast suppression — 마지막 결과만 보고
+            handleFxFile(f, replaceCurrency);
+            setTimeout(resolve, 600);  // FileReader는 비동기라 시간 줌
+          });
+          okCount++;
+        } catch (err) { console.error(err); }
+      }
+      toast('환율 파일 ' + okCount + '/' + files.length + '개 처리 완료', 'ok');
+      renderSettings();
+      renderYearChips();
+      renderDashboard();
+    }
+    e.target.value = '';
+  });
+}
+
+// 3) 카드 자료 업로드 핸들러를 다중 파일 지원으로 교체
+const _detailInput = document.getElementById('detail-csvfile');
+if (_detailInput) {
+  const newDetail = _detailInput.cloneNode(true);
+  _detailInput.parentNode.replaceChild(newDetail, _detailInput);
+  newDetail.setAttribute('multiple', 'multiple');
+  newDetail.setAttribute('accept', '.pdf,.csv,.xlsx,.xls');
+  newDetail.addEventListener('change', async e => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    if (files.length === 1) {
+      // 단일 파일은 기존 dispatcher
+      const f = files[0];
+      const lower = f.name.toLowerCase();
+      if (lower.endsWith('.pdf') || lower.endsWith('.xlsx') || lower.endsWith('.xls')) {
+        await dispatchPlatformFile(f);
+      } else {
+        handlePlatformCsv(f);
+      }
+    } else {
+      // 다중 파일: 순차 처리
+      toast(files.length + '개 파일 처리 시작...', '');
+      let okCount = 0, errCount = 0;
+      const results = [];
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        const lower = f.name.toLowerCase();
+        try {
+          if (lower.endsWith('.pdf') || lower.endsWith('.xlsx') || lower.endsWith('.xls')) {
+            await dispatchPlatformFile(f);
+          } else {
+            // CSV는 readAsArrayBuffer 콜백이라 promise 래핑
+            await new Promise((resolve) => {
+              handlePlatformCsv(f);
+              setTimeout(resolve, 500);
+            });
+          }
+          okCount++;
+          results.push('✓ ' + f.name);
+        } catch (err) {
+          errCount++;
+          results.push('✗ ' + f.name + ' (' + err.message + ')');
+          console.error(err);
+        }
+      }
+      toast('자료 업로드 완료: 성공 ' + okCount + ' / 실패 ' + errCount + ' (총 ' + files.length + '개)', errCount ? 'err' : 'ok');
+      console.log('업로드 결과:\n' + results.join('\n'));
+      renderDetailTable();
+      renderDashboard();
+    }
+    e.target.value = '';
+  });
+}
+
+// 4) 업로드존 안내 텍스트 갱신 — 여러 파일 한번에 가능
+const upTitle = document.querySelector('.up-title');
+if (upTitle) upTitle.textContent = '환율 엑셀(.xlsx) 또는 CSV 끌어다 놓기 (여러 파일 가능)';
+
+// 5) 모달 모달의 자료 업로드 버튼 라벨 갱신
+const detailCsvBtn = document.getElementById('detail-csv');
+if (detailCsvBtn) detailCsvBtn.textContent = '📁 자료 업로드 (PDF/Excel/CSV, 여러 개 가능)';
+
+// 6) 카드의 자료 업로드 버튼도 안내 갱신
+function refreshCardUploadHints() {
+  document.querySelectorAll('button[data-act="csv"]').forEach(btn => {
+    btn.textContent = '자료 업로드';
+    btn.title = '여러 파일 한번에 업로드 가능 (PDF/Excel/CSV)';
+  });
+}
+const _origRPG = renderPlatformGroups;
+window.renderPlatformGroups = function() {
+  _origRPG();
+  refreshCardUploadHints();
+};
+
+// 7) 드래그 앤 드롭도 다중 파일 지원 (환율 업로드존)
+const uz = document.getElementById('up-zone');
+if (uz) {
+  // 기존 drop 리스너는 단일 파일이라 새 리스너 추가
+  uz.addEventListener('drop', async e => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files || []);
+    if (files.length <= 1) return;  // 단일은 기존 핸들러가 처리
+    e.stopPropagation();
+    toast(files.length + '개 환율 파일 드롭 처리 중...', '');
+    for (const f of files) {
+      try {
+        await new Promise(resolve => {
+          handleFxFile(f);
+          setTimeout(resolve, 600);
+        });
+      } catch (err) { console.error(err); }
+    }
+    toast(files.length + '개 처리 완료', 'ok');
+    renderSettings();
+    renderYearChips();
+    renderDashboard();
+  }, true);
+}
+
+// 즉시 한 번 갱신
+setTimeout(() => {
+  refreshCardUploadHints();
+  if (typeof renderDashboard === 'function') renderDashboard();
+}, 200);
+
+console.log('다중 파일 업로드 활성화 완료');
+</script>
+
+
+<style>
+/* 드래그앤드롭 시각 효과 */
+.pl-card { position: relative; }
+.pl-card.drag-over { border-color: #4f46e5 !important; border-style: solid !important; box-shadow: 0 0 0 3px rgba(79,70,229,0.2); background: #eef2ff !important; }
+.pl-card.drag-over::after {
+  content: '📥 여기에 드롭하세요'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(79,70,229,0.92); color: #fff; font-weight: 700; font-size: 14px;
+  border-radius: 10px; pointer-events: none; z-index: 10;
+}
+
+/* 전체 화면 드래그 오버레이 */
+.global-drop-zone {
+  position: fixed; inset: 0; background: rgba(79,70,229,0.85); color: #fff;
+  display: none; align-items: center; justify-content: center;
+  z-index: 9999; pointer-events: none; font-size: 24px; font-weight: 700;
+  text-align: center;
+}
+.global-drop-zone.show { display: flex; }
+.global-drop-zone .inner { background: #fff; color: #1f2937; padding: 30px 50px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+.global-drop-zone .inner small { display: block; font-size: 13px; color: #6b7280; font-weight: 400; margin-top: 8px; }
+
+/* 처리중 오버레이 */
+.uploading-overlay {
+  position: fixed; bottom: 80px; right: 24px;
+  background: #1f2937; color: #fff; padding: 14px 18px; border-radius: 10px;
+  display: none; align-items: center; gap: 10px; z-index: 999;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2); font-size: 13px;
+}
+.uploading-overlay.show { display: flex; }
+.uploading-overlay .spin {
+  width: 16px; height: 16px; border: 2.5px solid rgba(255,255,255,.3);
+  border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<div class="global-drop-zone" id="global-drop">
+  <div class="inner">
+    📥 파일을 놓아 업로드하세요
+    <small>여러 파일 동시 가능 · PDF / Excel / CSV<br>해당 플랫폼 카드 위에 직접 떨어뜨리거나, 여기에 놓으면 자동 분류됩니다</small>
+  </div>
+</div>
+
+<div class="uploading-overlay" id="uploading">
+  <div class="spin"></div>
+  <span id="uploading-text">업로드 처리 중...</span>
+</div>
+
+<script>
+// ============ 다중 파일 업로드 + 드래그 앤 드롭 (강화) ============
+
+// 1) 모든 파일 input에 multiple 강제
+function ensureMultiple() {
+  ['up-input','detail-csvfile'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.setAttribute('multiple', '');
+      el.setAttribute('accept', id === 'up-input' ? '.xlsx,.xls,.csv' : '.pdf,.csv,.xlsx,.xls');
+    }
+  });
+}
+ensureMultiple();
+// 새로 렌더링 될 때마다 보장
+setInterval(ensureMultiple, 1500);
+
+// 2) 처리중 표시
+function showUploading(text) {
+  const el = document.getElementById('uploading');
+  document.getElementById('uploading-text').textContent = text;
+  el.classList.add('show');
+}
+function hideUploading() {
+  document.getElementById('uploading').classList.remove('show');
+}
+
+// 3) 단일 파일 처리 (Promise 래핑)
+function processSingleFile(file, targetPlatformId) {
+  return new Promise(async (resolve, reject) => {
+    if (targetPlatformId) state.detailPlatformId = targetPlatformId;
+    const lower = file.name.toLowerCase();
+    try {
+      if (lower.endsWith('.pdf') || lower.endsWith('.xlsx') || lower.endsWith('.xls')) {
+        await dispatchPlatformFile(file);
+        // dispatchPlatformFile은 비동기이지만 saveState 후 즉시 끝나야 함
+        setTimeout(resolve, 300);
+      } else if (lower.endsWith('.csv')) {
+        handlePlatformCsv(file);
+        setTimeout(resolve, 400);
+      } else {
+        reject(new Error('지원하지 않는 파일 형식: ' + file.name));
+      }
+    } catch (e) { reject(e); }
+  });
+}
+
+// 4) 다중 파일 일괄 처리
+async function processMultipleFiles(files, targetPlatformId) {
+  if (!files || !files.length) return;
+  let okCount = 0, errCount = 0;
+  for (let i = 0; i < files.length; i++) {
+    showUploading('파일 ' + (i+1) + '/' + files.length + ' 처리 중: ' + files[i].name.substring(0, 30));
+    try {
+      await processSingleFile(files[i], targetPlatformId);
+      okCount++;
+    } catch (e) {
+      errCount++;
+      console.error('파일 처리 실패:', files[i].name, e);
+    }
+  }
+  hideUploading();
+  toast('업로드 완료: 성공 ' + okCount + ' / 실패 ' + errCount + ' (총 ' + files.length + '개)', errCount ? 'err' : 'ok');
+  if (typeof renderDetailTable === 'function') renderDetailTable();
+  renderDashboard();
+}
+
+// 5) 카드 자료 업로드 input change 새로 연결 (덮어쓰기)
+const detailFile = document.getElementById('detail-csvfile');
+if (detailFile) {
+  // 기존 listener 다 지우려면 clone
+  const fresh = detailFile.cloneNode(false);
+  fresh.id = 'detail-csvfile';
+  fresh.type = 'file';
+  fresh.setAttribute('multiple', '');
+  fresh.setAttribute('accept', '.pdf,.csv,.xlsx,.xls');
+  fresh.style.display = 'none';
+  detailFile.parentNode.replaceChild(fresh, detailFile);
+  fresh.addEventListener('change', async e => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    await processMultipleFiles(files, state.detailPlatformId);
+    e.target.value = '';
+  });
+}
+
+// 6) 환율 업로드 input change 새로 연결
+const upFile = document.getElementById('up-input');
+if (upFile) {
+  const fresh = upFile.cloneNode(false);
+  fresh.id = 'up-input';
+  fresh.type = 'file';
+  fresh.setAttribute('multiple', '');
+  fresh.setAttribute('accept', '.xlsx,.xls,.csv');
+  fresh.style.display = 'none';
+  upFile.parentNode.replaceChild(fresh, upFile);
+  fresh.addEventListener('change', async e => {
+    const files = Array.from(e.target.files || []);
+    const replaceCurrency = e.target.dataset.replaceCurrency;
+    delete e.target.dataset.replaceYear;
+    delete e.target.dataset.replaceCurrency;
+    if (!files.length) return;
+    showUploading(files.length + '개 환율 파일 처리 중...');
+    for (const f of files) {
+      try {
+        await new Promise(resolve => {
+          handleFxFile(f, replaceCurrency);
+          setTimeout(resolve, 600);
+        });
+      } catch (err) { console.error(err); }
+    }
+    hideUploading();
+    toast('환율 ' + files.length + '개 처리 완료', 'ok');
+    renderSettings();
+    renderYearChips();
+    renderDashboard();
+    e.target.value = '';
+  });
+}
+
+// 7) 플랫폼 카드를 드롭존으로
+let dragCounter = 0;
+function attachCardDropZones() {
+  document.querySelectorAll('.pl-card[data-pl]').forEach(card => {
+    if (card.dataset.dropAttached) return;
+    card.dataset.dropAttached = '1';
+    const platformId = card.dataset.pl;
+    card.addEventListener('dragenter', e => { e.preventDefault(); e.stopPropagation(); card.classList.add('drag-over'); });
+    card.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); e.dataTransfer.dropEffect = 'copy'; });
+    card.addEventListener('dragleave', e => { e.preventDefault(); e.stopPropagation(); card.classList.remove('drag-over'); });
+    card.addEventListener('drop', async e => {
+      e.preventDefault();
+      e.stopPropagation();
+      card.classList.remove('drag-over');
+      const files = Array.from(e.dataTransfer.files || []);
+      if (!files.length) return;
+      await processMultipleFiles(files, platformId);
+    });
+  });
+}
+
+const _origRPG2 = renderPlatformGroups;
+window.renderPlatformGroups = function() {
+  _origRPG2();
+  setTimeout(attachCardDropZones, 30);
+};
+attachCardDropZones();
+
+// 8) 전체 화면 드롭 (어디든 드래그하면 표시)
+const globalDrop = document.getElementById('global-drop');
+window.addEventListener('dragenter', e => {
+  if (!e.dataTransfer || !e.dataTransfer.types.includes('Files')) return;
+  dragCounter++;
+  globalDrop.classList.add('show');
+});
+window.addEventListener('dragover', e => {
+  if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  }
+});
+window.addEventListener('dragleave', e => {
+  dragCounter--;
+  if (dragCounter <= 0) {
+    dragCounter = 0;
+    globalDrop.classList.remove('show');
+  }
+});
+window.addEventListener('drop', async e => {
+  dragCounter = 0;
+  globalDrop.classList.remove('show');
+  // 카드 위에 드롭됐다면 카드 핸들러가 처리하므로 패스 (event.target이 카드 내부면)
+  let target = e.target;
+  while (target && target !== document.body) {
+    if (target.classList && target.classList.contains('pl-card') && target.dataset.pl) return;
+    target = target.parentElement;
+  }
+  // 카드 외부에 드롭 → 자동 분류 (route in dispatchPlatformFile)
+  e.preventDefault();
+  const files = Array.from(e.dataTransfer.files || []);
+  if (!files.length) return;
+  // 임시로 default 카드 (qoo10) 설정 — dispatchPlatformFile 이 _route 보고 분배함
+  await processMultipleFiles(files, 'qoo10');
+});
+
+// 9) 카드 자료 업로드 버튼 동작 (검증)
+document.addEventListener('click', e => {
+  if (e.target.matches('button[data-act="csv"]')) {
+    const pl = e.target.dataset.pl;
+    if (pl) {
+      state.detailPlatformId = pl;
+      const inp = document.getElementById('detail-csvfile');
+      if (inp) {
+        // multiple 강제 설정 (혹시 누락 방지)
+        inp.setAttribute('multiple', '');
+        inp.click();
+      }
+    }
+  }
+}, true);
+
+// 10) 모달의 자료 업로드 버튼도 multiple 강제
+const detailCsvBtn = document.getElementById('detail-csv');
+if (detailCsvBtn) {
+  detailCsvBtn.textContent = '📁 자료 업로드 (여러 파일 가능)';
+  detailCsvBtn.title = 'Ctrl 또는 Shift 키 누른 채로 여러 파일 선택 가능';
+}
+
+// 카드 버튼 라벨도 갱신
+function refreshCardUploadHints2() {
+  document.querySelectorAll('button[data-act="csv"]').forEach(btn => {
+    btn.textContent = '📁 자료 업로드';
+    btn.title = '클릭해서 여러 파일 선택, 또는 카드 위로 드래그';
+  });
+}
+const _rpgFinal = renderPlatformGroups;
+window.renderPlatformGroups = function() {
+  _rpgFinal();
+  setTimeout(() => { attachCardDropZones(); refreshCardUploadHints2(); }, 30);
+};
+setTimeout(() => { attachCardDropZones(); refreshCardUploadHints2(); }, 100);
+
+console.log('카드 드래그앤드롭 + 다중 파일 활성화 (v2.4)');
+</script>
+
+
+<!-- Tesseract.js for OCR (한국어/일본어/영어 지원) -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+
+<style>
+.mega-upload {
+  margin: 16px 24px; padding: 24px; border: 2.5px dashed #4f46e5; background: #eef2ff;
+  border-radius: 12px; text-align: center; cursor: pointer; transition: all .15s;
+}
+.mega-upload:hover, .mega-upload.drag { background: #ddd6fe; border-color: #4338ca; transform: scale(1.01); }
+.mega-upload h2 { font-size: 18px; font-weight: 700; color: #3730a3; margin-bottom: 8px; }
+.mega-upload p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+.mega-upload .icon-big { font-size: 36px; margin-bottom: 8px; }
+.mega-upload button { margin-top: 10px; padding: 10px 20px; background: #4f46e5; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; }
+
+.upload-log { background: #1f2937; color: #d1d5db; padding: 12px 16px; margin: 0 24px 16px; border-radius: 8px; font-family: monospace; font-size: 11px; max-height: 200px; overflow-y: auto; line-height: 1.5; display: none; }
+.upload-log.show { display: block; }
+.upload-log .ok { color: #6ee7b7; }
+.upload-log .err { color: #fca5a5; }
+.upload-log .info { color: #93c5fd; }
+.upload-log .warn { color: #fbbf24; }
+</style>
+
+<script>
+// ============ v2.5 — 통합 업로드 영역 + PDF + OCR ============
+
+// 1) 통합 업로드 영역을 대시보드 상단에 삽입
+function insertMegaUpload() {
+  if (document.getElementById('mega-upload')) return;
+  const dash = document.getElementById('tab-dashboard');
+  const acc = document.querySelector('.account-panel');
+  if (!dash || !acc) return;
+  const div = document.createElement('div');
+  div.className = 'mega-upload';
+  div.id = 'mega-upload';
+  div.innerHTML = `
+    <div class="icon-big">📤</div>
+    <h2>자료 업로드 (PDF + Excel + CSV — 여러 파일 동시)</h2>
+    <p>PDF·엑셀·CSV 파일을 여기로 끌어다 놓거나 버튼을 누르세요. 플랫폼은 PDF 내용 보고 자동 분류됩니다.</p>
+    <p style="font-size:11px; color:#6b7280; margin-top:4px;">이미지 PDF(큐텐 영수증 등)는 OCR로 자동 처리 (시간 소요)</p>
+    <input type="file" id="mega-file" multiple accept=".pdf,.csv,.xlsx,.xls" style="display:none;">
+    <button type="button" id="mega-btn">📂 파일 선택 (Ctrl/Shift로 여러 개)</button>
+  `;
+  dash.insertBefore(div, acc);
+
+  const log = document.createElement('div');
+  log.className = 'upload-log';
+  log.id = 'upload-log';
+  dash.insertBefore(log, acc);
+}
+
+function logMsg(msg, level) {
+  const el = document.getElementById('upload-log');
+  if (!el) return;
+  el.classList.add('show');
+  const ts = new Date().toLocaleTimeString('ko-KR');
+  const cls = level || 'info';
+  el.innerHTML += '<div class="' + cls + '">[' + ts + '] ' + msg + '</div>';
+  el.scrollTop = el.scrollHeight;
+}
+function clearLog() { const el = document.getElementById('upload-log'); if (el) el.innerHTML = ''; }
+
+insertMegaUpload();
+
+// 2) 통합 업로드 영역 핸들러
+document.addEventListener('click', e => {
+  if (e.target.id === 'mega-btn' || e.target.id === 'mega-upload' || (e.target.closest && e.target.closest('#mega-upload') && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT')) {
+    document.getElementById('mega-file').click();
+  }
+});
+
+document.addEventListener('change', async e => {
+  if (e.target.id === 'mega-file') {
+    const files = Array.from(e.target.files || []);
+    if (files.length) await processFiles(files);
+    e.target.value = '';
+  }
+});
+
+const megaUp = document.addEventListener('dragover', e => {
+  if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+    const t = e.target.closest('#mega-upload');
+    if (t) { e.preventDefault(); t.classList.add('drag'); e.dataTransfer.dropEffect = 'copy'; }
+  }
+});
+document.addEventListener('dragleave', e => {
+  const t = e.target.closest && e.target.closest('#mega-upload');
+  if (t) t.classList.remove('drag');
+});
+document.addEventListener('drop', async e => {
+  const t = e.target.closest && e.target.closest('#mega-upload');
+  if (t) {
+    e.preventDefault();
+    e.stopPropagation();
+    t.classList.remove('drag');
+    const files = Array.from(e.dataTransfer.files || []);
+    if (files.length) await processFiles(files);
+  }
+});
+
+// 3) 통합 처리 함수
+async function processFiles(files) {
+  clearLog();
+  logMsg(files.length + '개 파일 처리 시작', 'info');
+  let okCount = 0, errCount = 0;
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    logMsg('[' + (i+1) + '/' + files.length + '] ' + f.name + ' (' + Math.round(f.size/1024) + ' KB)', 'info');
+    try {
+      await processOneFile(f);
+      okCount++;
+      logMsg('  ✓ 처리 완료', 'ok');
+    } catch (err) {
+      errCount++;
+      logMsg('  ✗ 실패: ' + err.message, 'err');
+      console.error(err);
+    }
+  }
+  logMsg('완료: 성공 ' + okCount + ' / 실패 ' + errCount, errCount ? 'err' : 'ok');
+  toast('업로드: 성공 ' + okCount + ' / 실패 ' + errCount, errCount ? 'err' : 'ok');
+  saveState();
+  renderDashboard();
+}
+
+async function processOneFile(file) {
+  const lower = file.name.toLowerCase();
+  if (lower.endsWith('.pdf')) {
+    return await processPdfFile(file);
+  } else if (lower.endsWith('.xlsx') || lower.endsWith('.xls')) {
+    return await processExcelFile(file);
+  } else if (lower.endsWith('.csv')) {
+    return await processCsvFile(file);
+  } else {
+    throw new Error('지원하지 않는 형식 (.pdf/.xlsx/.csv 만 지원)');
+  }
+}
+
+// ============ PDF 처리 (텍스트 추출 + OCR 폴백) ============
+async function processPdfFile(file) {
+  if (!window.pdfjsLib) throw new Error('PDF.js 라이브러리가 로드되지 않았습니다');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  logMsg('  PDF 열기...', 'info');
+  const ab = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+  logMsg('  ' + pdf.numPages + '페이지 PDF', 'info');
+
+  // 텍스트 추출 시도
+  const pages = [];
+  let totalChars = 0;
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p);
+    const text = await extractPageText(page);
+    pages.push(text);
+    totalChars += text.length;
+  }
+  logMsg('  텍스트 추출: ' + totalChars + '자', 'info');
+
+  // 텍스트가 너무 적으면 OCR로 폴백 (페이지당 평균 100자 미만)
+  if (totalChars < pdf.numPages * 100) {
+    logMsg('  텍스트가 적음 → OCR 시도 (시간 소요)', 'warn');
+    if (!window.Tesseract) throw new Error('Tesseract.js OCR 라이브러리가 로드되지 않았습니다');
+    const ocrPages = [];
+    for (let p = 1; p <= pdf.numPages; p++) {
+      logMsg('  OCR 페이지 ' + p + '/' + pdf.numPages + '...', 'info');
+      const page = await pdf.getPage(p);
+      const text = await ocrPage(page);
+      ocrPages.push(text);
+    }
+    return await routePdfText(file.name, ocrPages, true);
+  }
+
+  return await routePdfText(file.name, pages, false);
+}
+
+// PDF 페이지 → 텍스트 (라인 재구성)
+async function extractPageText(page) {
+  const tc = await page.getTextContent();
+  // 아이템을 y좌표(상→하), 그 다음 x좌표(좌→우)로 정렬
+  const items = tc.items.map(it => ({
+    str: it.str, x: it.transform[4], y: it.transform[5]
+  })).sort((a, b) => {
+    const dy = b.y - a.y;
+    if (Math.abs(dy) > 3) return dy;
+    return a.x - b.x;
+  });
+  // 같은 y축 그룹으로 라인 만듦
+  const lines = [];
+  let curLine = [];
+  let curY = null;
+  for (const it of items) {
+    if (curY === null || Math.abs(curY - it.y) > 3) {
+      if (curLine.length) lines.push(curLine);
+      curLine = [];
+      curY = it.y;
+    }
+    curLine.push(it);
+  }
+  if (curLine.length) lines.push(curLine);
+  // 각 라인을 x로 정렬 후 적당한 공백 사이에 둠
+  return lines.map(line => {
+    line.sort((a, b) => a.x - b.x);
+    let result = '';
+    let lastX = null;
+    for (const it of line) {
+      if (lastX !== null && it.x - lastX > 5) result += '   ';
+      else if (lastX !== null) result += ' ';
+      result += it.str;
+      lastX = it.x + (it.str.length * 5);
+    }
+    return result;
+  }).join('\n');
+}
+
+// OCR (Tesseract.js)
+async function ocrPage(page) {
+  const viewport = page.getViewport({ scale: 2.0 });
+  const canvas = document.createElement('canvas');
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  const ctx = canvas.getContext('2d');
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  // 한국어 + 일본어 + 영어 인식
+  const result = await Tesseract.recognize(canvas, 'jpn+kor+eng', {
+    logger: m => {
+      if (m.status === 'recognizing text' && m.progress) {
+        // logMsg('    OCR ' + Math.round(m.progress * 100) + '%', 'info');
+      }
+    }
+  });
+  return result.data.text;
+}
+
+// 추출된 텍스트로 플랫폼 자동 감지 + 라우팅
+async function routePdfText(filename, pages, viaOcr) {
+  const fullText = pages.join('\n');
+  let txns = [], parser = '';
+
+  if (fullText.includes('Income Statement') || fullText.includes('kaycos.') || fullText.includes('Payout Service')) {
+    parser = 'Shopee Income Statement';
+    txns = parseShopeeIncomeStatement(pages);
+  } else if (fullText.includes('Account activity') || fullText.includes('Fulfillment by Amazon') || fullText.includes('Amazon Marketplace')) {
+    parser = 'Amazon Date Range Report';
+    txns = parseAmazonStatement(pages);
+  } else if (fullText.match(/JP-[QSC]\d{7,}/) || fullText.includes('Q-Cash') || fullText.includes('eBay Japan')) {
+    parser = '큐텐 영수증' + (viaOcr ? ' (OCR)' : '');
+    txns = parseQooReceiptText(fullText, filename);
+  } else {
+    logMsg('  ⚠ 양식 자동 인식 실패 — 추출된 첫 100자: ' + fullText.substring(0, 100), 'warn');
+    throw new Error('PDF 양식을 자동 인식하지 못했습니다 (Shopee/Amazon/Qoo10만 지원)');
+  }
+
+  if (!txns.length) {
+    throw new Error(parser + ' 파서 — 인식된 항목 없음');
+  }
+
+  logMsg('  ' + parser + ' 파서 → ' + txns.length + '건 인식', 'ok');
+
+  // 라우팅
+  const y = state.selectedYear;
+  if (!state.platformData[y]) state.platformData[y] = {};
+  const counts = {};
+  for (const t of txns) {
+    const target = t._route || state.detailPlatformId || 'qoo10';
+    delete t._route;
+    if (!state.platformData[y][target]) state.platformData[y][target] = [];
+    state.platformData[y][target].push(t);
+    counts[target] = (counts[target] || 0) + 1;
+  }
+  const summary = Object.entries(counts).map(([k,v]) => k + '×' + v).join(', ');
+  logMsg('  → ' + summary, 'ok');
+}
+
+// 큐텐 OCR 영수증 텍스트 파서
+function parseQooReceiptText(text, filename) {
+  const txns = [];
+  // 영수증 번호로 블록 분할
+  const blocks = text.split(/(?=NO\.\s*JP-[QSC])/);
+  for (const block of blocks) {
+    const noMatch = block.match(/NO\.\s*(JP-[QSC]\d+)/);
+    if (!noMatch) continue;
+    const invoice = noMatch[1];
+    let kind;
+    if (invoice.startsWith('JP-Q')) kind = { account:'광고선전비', label:'Q캐쉬' };
+    else if (invoice.startsWith('JP-S')) kind = { account:'지급수수료', label:'서비스수수료' };
+    else if (invoice.startsWith('JP-C')) kind = { account:'광고선전비', label:'스마트세일즈' };
+    else continue;
+
+    // 期間 또는 期 関 (OCR 오류) → 기간 추출
+    const periodMatch = block.match(/(?:期間|期\s*関|期\s*間)[:：\s]*(\d{4}\/\d{1,2}\/\d{1,2})\s*[~\-∼]\s*(\d{4}\/\d{1,2}\/\d{1,2})/);
+    if (!periodMatch) continue;
+    const periodEnd = periodMatch[2].replace(/\//g, '-').replace(/-(\d)-/g, '-0$1-').replace(/-(\d)$/, '-0$1');
+
+    // 合計 또는 合 計 → 합계 금액 추출 (OCR 오류 대응)
+    const totalMatch = block.match(/(?:合計|合\s*計|台計)[\s:]*([\d,]+)/);
+    if (!totalMatch) continue;
+    const total = parseFloat(totalMatch[1].replace(/,/g, ''));
+    if (isNaN(total) || total === 0) continue;
+
+    txns.push({
+      id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      date: periodEnd,
+      account: kind.account,
+      name: kind.label + ' (' + periodEnd.substring(0,7) + ')',
+      amount: Math.abs(total),
+      currency: 'JPY',
+      memo: invoice + ' / ' + filename,
+      _route: 'qoo10'
+    });
+  }
+  return txns;
+}
+
+// ============ Excel 처리 ============
+async function processExcelFile(file) {
+  const ab = await file.arrayBuffer();
+  const wb = XLSX.read(ab, { type: 'array', cellDates: true });
+  const firstSheet = wb.Sheets[wb.SheetNames[0]];
+  const sample = XLSX.utils.sheet_to_json(firstSheet, { header: 1, raw: false, defval: '' }).slice(0, 5);
+  const sampleText = sample.map(r => (r[0]||'').toString()).join(' ');
+
+  if (sampleText.match(/NO\.\s*JP-[QSC]/)) {
+    logMsg('  큐텐 OCR 영수증 합본 인식', 'info');
+    const txns = parseQooReceiptsXlsx(wb);
+    addTxnsToState(txns);
+    logMsg('  → ' + txns.length + '건 등록', 'ok');
+    return;
+  }
+  // 송금수수료 형식
+  const headers = sample[0] || [];
+  if (headers.some(h => String(h||'').includes('발생일') || String(h||'').includes('송금수수료'))) {
+    logMsg('  큐텐 송금수수료 인식', 'info');
+    const txns = parseQooTransferXlsx(wb);
+    addTxnsToState(txns);
+    logMsg('  → ' + txns.length + '건 등록', 'ok');
+    return;
+  }
+  // 일반 표 형식 (date/account/amount/currency)
+  logMsg('  일반 표 형식으로 처리', 'info');
+  const rows = XLSX.utils.sheet_to_json(firstSheet, { raw: false, defval: '' });
+  await processGenericRows(rows, file.name);
+}
+
+// ============ CSV 처리 ============
+async function processCsvFile(file) {
+  const text = await file.text();
+  const rows = parseCsv(text.replace(/^﻿/, ''));
+  await processGenericRows(rows, file.name);
+}
+
+async function processGenericRows(rows, filename) {
+  if (!rows.length) throw new Error('데이터 없음');
+  const txns = [];
+  for (const row of rows) {
+    const keys = Object.keys(row);
+    const find = (...names) => {
+      for (const n of names) {
+        const k = keys.find(kk => String(kk).trim().toLowerCase() === n.toLowerCase());
+        if (k) return row[k];
+      }
+      return null;
+    };
+    const date = parseDate(find('date','거래일','날짜','일자','정산일'));
+    let account = find('account','계정','분류') || '지급수수료';
+    const cat = find('category','구분');
+    if (cat && !find('account','계정','분류')) {
+      if (cat === '광고비' || cat === '광고선전비') account = '광고선전비';
+      else if (cat === '수수료' || cat === '지급수수료') account = '지급수수료';
+      else if (cat === '물류수수료' || cat === '물류비') account = '물류비';
+      else if (cat === '매출세' || cat === '세금') account = '매출세';
+      else if (cat === '환불') account = '환불';
+      else account = '기타';
+    }
+    const name = find('name','항목','itemRaw','itemLabel','description') || '';
+    let amount = parseFloat(String(find('amount','금액','value') || '').replace(/,/g, ''));
+    if (isNaN(amount)) continue;
+    amount = Math.abs(amount);
+    const country = find('country','국가','countryCode');
+    let route = state.detailPlatformId;
+    const currency = (find('currency','통화','cur') || 'USD').toUpperCase();
+    // country 또는 currency로 라우팅
+    if (country) {
+      const map = { '말레이시아':'shopee_my','MY':'shopee_my','멕시코':'shopee_mx','MX':'shopee_mx',
+        '베트남':'shopee_vn','VN':'shopee_vn','브라질':'shopee_br','BR':'shopee_br',
+        '싱가폴':'shopee_sg','SG':'shopee_sg','대만':'shopee_tw','TW':'shopee_tw',
+        '태국':'shopee_th','TH':'shopee_th','필리핀':'shopee_ph','PH':'shopee_ph' };
+      if (map[country]) route = map[country];
+    }
+    if (date) {
+      txns.push({ id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), date, account, name, amount, currency, memo: find('memo') || '', _route: route });
+    }
+  }
+  if (!txns.length) throw new Error('인식된 항목 없음 (date/amount 컬럼 확인)');
+  addTxnsToState(txns);
+  logMsg('  → ' + txns.length + '건 등록', 'ok');
+}
+
+function addTxnsToState(txns) {
+  const y = state.selectedYear;
+  if (!state.platformData[y]) state.platformData[y] = {};
+  const counts = {};
+  for (const t of txns) {
+    const target = t._route || state.detailPlatformId || 'qoo10';
+    delete t._route;
+    if (!state.platformData[y][target]) state.platformData[y][target] = [];
+    state.platformData[y][target].push(t);
+    counts[target] = (counts[target] || 0) + 1;
+  }
+  if (Object.keys(counts).length > 1) {
+    const summary = Object.entries(counts).map(([k,v]) => k + '×' + v).join(', ');
+    logMsg('  분배: ' + summary, 'info');
+  }
+}
+
+console.log('v2.5 통합 업로드 + PDF + OCR 활성화');
+logMsg('업로드 시스템 준비 완료. 위 영역에 PDF/Excel/CSV를 끌어다 놓거나 클릭', 'ok');
+</script>
+
+</body>
+</html>
